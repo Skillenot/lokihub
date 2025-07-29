@@ -521,6 +521,9 @@ body {
 }
 
 .created-by {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   background: var(--glass-bg);
   backdrop-filter: var(--glass-backdrop-blur);
   border: 1px solid var(--glass-border);
@@ -530,12 +533,27 @@ body {
   font-weight: 500;
   font-size: 14px;
   width: 800px;
-  box-shadow: 
+  box-shadow:
     0 4px 20px rgba(0, 0, 0, 0.2),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
   transition: all 0.3s ease;
   animation: fadeInUp 1.2s ease-out;
-  text-align: center;
+  text-align: left;
+}
+
+.social-icons {
+  display: flex;
+  gap: 16px;
+}
+
+.social-icons a {
+  color: var(--text);
+  font-size: 18px;
+  transition: color 0.3s ease;
+}
+
+.social-icons a:hover {
+  color: var(--primary);
 }
 
 .created-by:hover {
