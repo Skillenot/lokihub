@@ -339,92 +339,94 @@ body {
 /* ----------------------- APPLICATIONS SECTION ----------------------- */
 .applications-container {
   margin-top: 60px;
-  background: var(--glass-bg);
+  background: rgba(255, 255, 255, 0.08);
   backdrop-filter: var(--glass-backdrop-blur);
-  border: 1px solid var(--glass-border);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 24px;
-  padding: 32px 24px;
-  box-shadow: 
+  padding: 40px 24px;
+  box-shadow:
     0 8px 32px rgba(0, 0, 0, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
   animation: fadeInUp 0.8s ease-out 0.8s both;
 }
 
 .applications-section {
-  margin-top: 0;
+  margin-top: 40px;
+  display: flex;
+  justify-content: center;
   animation: none;
 }
 
 .app-pills {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 24px;
   justify-content: center;
   align-items: center;
 }
 
 .app-pill {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 12px;
-  padding: 16px 28px;
-  border-radius: 999px;
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-backdrop-blur);
-  border: 1px solid var(--glass-border);
-  color: #fff;
+  justify-content: center;
+  gap: 6px;
+  width: 100px;
+  height: 100px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  color: var(--primary-ink);
   font-weight: 600;
-  font-size: 16px;
+  font-size: 14px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 
+  box-shadow:
     0 4px 20px rgba(0, 0, 0, 0.2),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  text-align: center;
 }
 
 .app-pill:hover {
   transform: translateY(-3px) scale(1.05);
-  background: rgba(0, 0, 0, 0.8);
-  box-shadow: 
+  background: rgba(255, 255, 255, 0.25);
+  box-shadow:
     0 8px 30px rgba(0, 0, 0, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 
 .app-icon {
-  font-size: 20px;
+  font-size: 32px;
 }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .app-pill {
-    font-size: 15px;
-    padding: 14px 24px;
+    width: 80px;
+    height: 80px;
+    font-size: 13px;
   }
   .app-icon {
-    font-size: 18px;
+    font-size: 26px;
   }
 }
 
 @media (max-width: 480px) {
   .app-pill {
-    width: 240px;
-    justify-content: center;
+    width: 72px;
+    height: 72px;
   }
 }
 
 .app-pill.coming-soon {
-  background: rgba(0, 0, 0, 0.5);
-  opacity: 0.7;
+  opacity: 0.6;
 }
 
 .app-pill.coming-soon:hover {
-  background: rgba(0, 0, 0, 0.6);
   opacity: 0.8;
 }
 
-.app-icon {
-  font-size: 16px;
-}
 
 /* ----------------------- MINIMALIST FOOTER ----------------------- */
 .footer {
