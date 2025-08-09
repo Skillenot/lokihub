@@ -1,6 +1,9 @@
 /*
   LokiHub 
 */
+  document.getElementById('sudoku').onclick = function() {
+    window.location.href = '/sudoku/index.html';
+  };
 
 document.addEventListener('DOMContentLoaded', () => {
   const nav = document.getElementById('mainNav');
@@ -79,28 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Application pill handlers
-  const appHandlers = {
-    lokifinance: () => {
-      console.log('LokiFinance clicked');
-      alert('💰 LokiFinance - Tu gestor financiero personal');
-    },
-    lokichat: () => {
-      console.log('LokiChat clicked');
-      alert('💬 LokiChat - Comunicación instantánea');
-    },
-    sudoku: () => {
-      console.log('Sudoku clicked');
-      alert('🧩 Sudoku - ¡Desafía tu mente!');
-    },
-    'nube-app': () => {
-      console.log('Nube app clicked');
-      alert('☁️ LokiNube - Almacenamiento seguro en la nube');
-    },
-    proximamente: () => {
-      console.log('Próximamente clicked');
-      alert('🚀 ¡Grandes cosas están por venir!');
-    }
-  };
+
 
   // Attach app pill handlers
   Object.keys(appHandlers).forEach(appId => {
