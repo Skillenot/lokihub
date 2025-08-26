@@ -2,7 +2,14 @@
   LokiHub 
 */
   document.getElementById('sudoku').onclick = function() {
-    window.location.href = '/sudoku/index.html';
+    window.location.href = 'https://lokihub.cloud/sudoku';
+  };
+
+    document.getElementById('nube').onclick = function() {
+    window.location.href = 'https://cloud.lokihub.cloud';
+  };
+     document.getElementById('nubenav').onclick = function() {
+    window.location.href = 'https://cloud.lokihub.cloud';
   };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -57,20 +64,17 @@ document.addEventListener('DOMContentLoaded', () => {
     contacto: () => {
       console.log('Contacto clicked');
       // You can replace this with actual contact functionality
-      alert('📧 Contacto: lokihub@gmail.com');
+      alert('Contacto: asd@asd.com');
     },
     github: () => {
       console.log('Github clicked');
-      window.open('https://github.com/lokihub', '_blank');
+      alert('Sapo papi');
     },
     finance: () => {
       console.log('Finance clicked');
-      alert('💰 LokiFinance - Próximamente disponible');
+      alert('LokiFinance - Próximamente disponible');
     },
-    nube: () => {
-      console.log('Nube clicked');
-      alert('☁️ LokiNube - Tu almacenamiento en la nube');
-    }
+  
   };
 
   // Attach nav button handlers
@@ -83,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Application pill handlers
 
-
+  
   // Attach app pill handlers
   Object.keys(appHandlers).forEach(appId => {
     const app = document.getElementById(appId);
