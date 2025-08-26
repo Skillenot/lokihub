@@ -1,218 +1,208 @@
 /*
-  LokiHub 
+  LokiHub — Interacciones y Parallax mejorados (versión pulida)
+  - Menú responsive, parallax, tilt, reveal
+  - Navegación de cards por data-href
 */
-  document.getElementById('sudoku').onclick = function() {
-    window.location.href = 'https://lokihub.cloud/sudoku';
-  };
 
-    document.getElementById('nube').onclick = function() {
-    window.location.href = 'https://cloud.lokihub.cloud';
-  };
-     document.getElementById('nubenav').onclick = function() {
-    window.location.href = 'https://cloud.lokihub.cloud';
-  };
+// Links rápidos (apps)
+document.getElementById('sudoku').onclick = () => {
+  window.location.href = 'https://lokihub.cloud/sudoku';
+};
+
+document.getElementById('nube').onclick = () => {
+  window.location.href = 'https://cloud.lokihub.cloud';
+};
+
+document.getElementById('nubenav').onclick = () => {
+  window.location.href = 'https://cloud.lokihub.cloud';
+};
 
 document.addEventListener('DOMContentLoaded', () => {
-  const nav = document.getElementById('mainNav');
-  const lokiCat = document.getElementById('lokiCat');
+  const nav       = document.getElementById('mainNav');
+  const lokiCat   = document.getElementById('lokiCat');
+  const hamburger = document.getElementById('hamburger');
+  const navLinks  = document.getElementById('navLinks');
 
-  // Handle scroll to show liquid glass navbar
+  // Compact nav on scroll
   const onScroll = () => {
-    if (window.scrollY > 50) {
-      nav.classList.add('nav--compact');
-    } else {
-      nav.classList.remove('nav--compact');
-    }
+    if (window.scrollY > 50) nav.classList.add('nav--compact');
+    else nav.classList.remove('nav--compact');
   };
-
   window.addEventListener('scroll', onScroll);
+  onScroll();
 
-  // Loki cat interactions
+  // Hamburger menu
+  if (hamburger) {
+    hamburger.addEventListener('click', () => {
+      const open = hamburger.classList.toggle('active');
+      hamburger.setAttribute('aria-expanded', String(open));
+      const hidden = getComputedStyle(navLinks).display === 'none';
+      navLinks.style.display = hidden ? 'flex' : 'none';
+    });
+  }
+
+  // Loki cat bubble
   if (lokiCat) {
-    let originalBubbleText = '';
     const speechBubble = document.querySelector('.bubble-text');
-
-    if (speechBubble) {
-      originalBubbleText = speechBubble.textContent;
-    }
+    const originalText = speechBubble ? speechBubble.textContent : '';
 
     lokiCat.addEventListener('mouseenter', () => {
-      if (speechBubble) {
-        speechBubble.textContent = '¡Miau! 🐱';
-        speechBubble.style.transform = 'scale(1.05)';
-      }
+      if (!speechBubble) return;
+      speechBubble.textContent = '¡Miau! 🐱';
+      speechBubble.style.transform = 'scale(1.05)';
     });
 
     lokiCat.addEventListener('mouseleave', () => {
-      if (speechBubble) {
-        speechBubble.textContent = originalBubbleText;
-        speechBubble.style.transform = 'scale(1)';
-      }
+      if (!speechBubble) return;
+      speechBubble.textContent = originalText;
+      speechBubble.style.transform = 'scale(1)';
     });
 
-    // Click effect for Loki cat
     lokiCat.addEventListener('click', () => {
-      lokiCat.style.transform = 'scale(0.95)';
-      setTimeout(() => {
-        lokiCat.style.transform = 'scale(1)';
-      }, 150);
+      lokiCat.style.transform = 'scale(0.96)';
+      setTimeout(() => (lokiCat.style.transform = 'scale(1)'), 150);
     });
   }
 
-  // Navigation button handlers
+  // Botones de navegación externos
   const navButtons = {
-    contacto: () => {
-      console.log('Contacto clicked');
-      // You can replace this with actual contact functionality
-      alert('Contacto: asd@asd.com');
-    },
-    github: () => {
-      console.log('Github clicked');
-      alert('Sapo papi');
-    },
-    finance: () => {
-      console.log('Finance clicked');
-      alert('LokiFinance - Próximamente disponible');
-    },
-  
+    github:  () => window.open('https://github.com/lokihub', '_blank'),
+    finance: () => alert('LokiFinance - Próximamente disponible'),
   };
-
-  // Attach nav button handlers
-  Object.keys(navButtons).forEach(buttonId => {
-    const button = document.getElementById(buttonId);
-    if (button) {
-      button.addEventListener('click', navButtons[buttonId]);
-    }
+  Object.keys(navButtons).forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('click', navButtons[id]);
   });
 
-  // Application pill handlers
-
-  
-  // Attach app pill handlers
-  Object.keys(appHandlers).forEach(appId => {
-    const app = document.getElementById(appId);
-    if (app) {
-      app.addEventListener('click', appHandlers[appId]);
-    }
+  // App handlers "Pronto"
+  const appHandlers = {
+    lokifinance:   () => alert('💰 LokiFinance llegará pronto.'),
+    lokichat:      () => alert('💬 LokiChat llegará pronto.'),
+    proximamente:  () => alert('🚀 Nuevos proyectos en camino.'),
+  };
+  Object.keys(appHandlers).forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('click', appHandlers[id]);
   });
 
-  // Hero button handlers
-  const heroLogin = document.getElementById('heroLogin');
-  const deviceButton = document.getElementById('deviceButton');
-
-  if (heroLogin) {
-    heroLogin.addEventListener('click', () => {
-      console.log('Comenzar ahora clicked');
-      alert('🚀 ¡Bienvenido a LokiHub! Próximamente disponible.');
-    });
-  }
-
-  if (deviceButton) {
-    deviceButton.addEventListener('click', () => {
-      console.log('Explorar proyectos clicked');
-      // Hacer scroll a la sección de app-pills
-      const appPillsSection = document.querySelector('.app-pills');
-      if (appPillsSection) {
-        appPillsSection.scrollIntoView({
-          behavior: 'smooth',
-          block: 'center'
-        });
-      } else {
-        alert('🔍 Explora nuestros increíbles proyectos y aplicaciones.');
-      }
-    });
-  }
-
-  // smooth scroll
+  // Smooth scroll anclas
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
+      const href = this.getAttribute('href');
+      const target = href ? document.querySelector(href) : null;
+      if (!target) return;
       e.preventDefault();
-      const target = document.querySelector(this.getAttribute('href'));
-      if (target) {
-        target.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
-        });
-      }
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   });
 
-  // entrance animation on scroll
-  const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
-  };
+  // Reveal on scroll
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => entry.isIntersecting && entry.target.classList.add('visible'));
+  }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.style.opacity = '1';
-        entry.target.style.transform = 'translateY(0)';
-      }
-    });
-  }, observerOptions);
-
-  // Observe elements for scroll animations
-  document.querySelectorAll('.app-pill, .created-by').forEach(el => {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(20px)';
-    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-    observer.observe(el);
-  });
-
-  // particle effect hero button
-  document.querySelectorAll('.primary-button, .secondary-button').forEach(button => {
-    button.addEventListener('mouseenter', function() {
-      this.style.transform = 'translateY(-2px) scale(1.02)';
-    });
-
-    button.addEventListener('mouseleave', function() {
-      this.style.transform = 'translateY(0) scale(1)';
-    });
-  });
-
-  // App pills ripple
+  // Ripple en pills
   document.querySelectorAll('.app-pill').forEach(pill => {
     pill.addEventListener('click', function(e) {
+      const rect   = this.getBoundingClientRect();
+      const size   = Math.max(rect.width, rect.height);
+      const x      = e.clientX - rect.left - size / 2;
+      const y      = e.clientY - rect.top  - size / 2;
       const ripple = document.createElement('span');
-      const rect = this.getBoundingClientRect();
-      const size = Math.max(rect.width, rect.height);
-      const x = e.clientX - rect.left - size / 2;
-      const y = e.clientY - rect.top - size / 2;
 
-      ripple.style.width = ripple.style.height = size + 'px';
-      ripple.style.left = x + 'px';
-      ripple.style.top = y + 'px';
-      ripple.classList.add('ripple');
+      ripple.style.width  = size + 'px';
+      ripple.style.height = size + 'px';
+      ripple.style.left   = x + 'px';
+      ripple.style.top    = y + 'px';
+      ripple.className    = 'ripple';
 
       this.appendChild(ripple);
-
-      setTimeout(() => {
-        ripple.remove();
-      }, 600);
+      setTimeout(() => ripple.remove(), 600);
     });
   });
 
-  console.log('🐱 LokiHub loaded successfully!');
-});
-
-// ripple CSS
-const rippleStyle = document.createElement('style');
-rippleStyle.textContent = `
-  .ripple {
-    position: absolute;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.3);
-    transform: scale(0);
-    animation: ripple-animation 0.6s linear;
-    pointer-events: none;
-  }
-
-  @keyframes ripple-animation {
-    to {
-      transform: scale(4);
-      opacity: 0;
+  const rippleStyle = document.createElement('style');
+  rippleStyle.textContent = `
+    .ripple {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.3);
+      transform: scale(0);
+      animation: ripple-animation .6s linear;
+      pointer-events: none;
     }
+    @keyframes ripple-animation {
+      to { transform: scale(4); opacity: 0; }
+    }
+  `;
+  document.head.appendChild(rippleStyle);
+
+  // Parallax simple
+  const parallaxEls = document.querySelectorAll('[data-parallax]');
+  const parallax = () => {
+    const y = window.scrollY;
+    parallaxEls.forEach(el => {
+      const speed = parseFloat(el.getAttribute('data-speed')) || 0.1;
+      el.style.transform = `translateY(${y * speed}px)`;
+    });
+  };
+  window.addEventListener('scroll', parallax);
+  parallax();
+
+  // Tilt tarjeta showcase
+  const tilt = document.querySelector('.tilt');
+  if (tilt) {
+    tilt.addEventListener('mousemove', (e) => {
+      const rect = tilt.getBoundingClientRect();
+      const rx = (e.clientY - rect.top  - rect.height / 2) / 30;
+      const ry = (e.clientX - rect.left - rect.width  / 2) / -30;
+      tilt.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg)`;
+    });
+    tilt.addEventListener('mouseleave', () => {
+      tilt.style.transform = 'rotateX(0) rotateY(0)';
+    });
   }
-`;
-document.head.appendChild(rippleStyle);
+
+  // Canvas estrellitas
+  const canvas = document.getElementById('stars');
+  if (canvas) {
+    const ctx = canvas.getContext('2d');
+    let w, h, stars;
+
+    const init = () => {
+      w = canvas.width  = window.innerWidth;
+      h = canvas.height = window.innerHeight;
+      stars = Array.from({ length: Math.round((w * h) / 18000) }, () => ({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        r: Math.random() * 1.2 + .2,
+        a: Math.random() * 0.5 + 0.2
+      }));
+    };
+
+    const draw = () => {
+      ctx.clearRect(0, 0, w, h);
+      ctx.fillStyle = '#fff';
+      stars.forEach(s => {
+        ctx.globalAlpha = s.a;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      requestAnimationFrame(draw);
+    };
+
+    window.addEventListener('resize', init);
+    init();
+    draw();
+  }
+
+  // Navegación por cards (data-href)
+  document.querySelectorAll('.card[data-href]').forEach(card => {
+    card.addEventListener('click', () => {
+      const href = card.getAttribute('data-href');
+      if (href) window.location.href = href;
+    });
+  });
+});

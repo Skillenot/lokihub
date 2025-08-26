@@ -4,22 +4,45 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>LokiHub – Donde la creatividad se encuentra con la tecnología</title>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" type="image/png" href="svg.png" />
     <link rel="stylesheet" href="style.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha512-DxV+EoADOkOygM4IR9yXP8Sb2qwgidEmeqAEmDKIOfPRQZOWbXCzLC6vjbZyy0vPisbH2SyW27+ddLVCN+OMzQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
   </head>
+
   <body>
     <!-- NAV -->
     <nav id="mainNav" class="nav">
       <div class="nav-container">
-        <div class="logo">
-<i class="fa-solid fa-cat"></i>
-            <path d="M0.421875 1.56524C0.421875 0.700783 1.12266 0 1.98712 0H13.0088C14.2478 0 14.9956 1.37112 14.3248 2.41274L1.97573 21.5876C1.3049 22.6292 2.05273 24.0003 3.29168 24.0003H14.3134C15.1778 24.0003 15.8786 23.2996 15.8786 22.4351V11.4784C15.8786 10.614 15.1778 9.91319 14.3134 9.91319H1.98711C1.12266 9.91319 0.421875 9.21241 0.421875 8.34795V1.56524Z" fill="currentColor"/>
-          </svg>
+        <a class="logo" href="#hero" aria-label="Inicio">
+          <i class="fa-solid fa-cat"></i>
           <span class="logo-text">LokiHub</span>
-        </div>
-        <div class="nav-buttons">
-          <button class="nav-button" id="contacto">Contacto</button>
+        </a>
+
+        <button
+          class="hamburger"
+          id="hamburger"
+          aria-label="Abrir menú"
+          aria-expanded="false"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
+        <div class="nav-buttons" id="navLinks">
+          <a class="nav-button" href="#proyectos">Proyectos</a>
+          <a class="nav-button" href="#roadmap">Roadmap</a>
+          <a class="nav-button" href="#about">Sobre mí</a>
           <button class="nav-button" id="github">Github</button>
           <button class="nav-button" id="finance">Finance</button>
           <button class="nav-button primary" id="nubenav">Nube</button>
@@ -27,82 +50,240 @@
       </div>
     </nav>
 
+    <!-- PARALLAX BACKDROP -->
+    <div class="backdrop" aria-hidden="true">
+      <div class="blob blob-1" data-parallax data-speed="0.15"></div>
+      <div class="blob blob-2" data-parallax data-speed="0.25"></div>
+      <div class="grid-lines" data-parallax data-speed="0.05"></div>
+      <canvas id="stars" class="stars" data-parallax data-speed="0.02"></canvas>
+      <div class="noise"></div>
+    </div>
+
     <!-- HERO -->
     <header class="hero" id="hero">
-      <div class="hero-content">
-        <div class="icon-box">
-          <i class="fa-solid fa-cat fa-2x"></i>
-            <path d="M27 6.00787C27 3.00047 24.562 0.5625 21.5546 0.5625H8.05925C4.20248 0.5625 1.56807 4.46147 3.00714 8.03971L13.7828 34.8332C15.2219 38.4114 12.5874 42.3104 8.73067 42.3104H5.44538C2.43798 42.3104 0 39.8724 0 36.865V27.3446C0 22.4127 6.03235 20.0213 9.41162 23.6135L17.5884 32.3056C20.9676 35.8979 27 33.5064 27 28.5745V6.00787Z" fill="currentColor"/>
-          </svg>
-        </div>
-        <h1 class="main-title">LokiHub Cloud</h1>
-        <p class="subtitle">Todo lo que necesitas al alcance de un click</p>
-      <!-- <div class="hero-buttons">
-          <button class="primary-button" id="heroLogin">Comenzar ahora</button>
-          <button class="secondary-button" id="deviceButton">Explorar proyectos</button>
-        </div>
-        --> 
-      </div>
+      <div class="container">
+        <div class="hero-inner">
+          <div class="icon-box" data-parallax data-speed="0.2">
+            <i class="fa-solid fa-cat fa-2x"></i>
+          </div>
 
-      <div class="hero-image">
-                <!-- APPLICATIONS SECTION -->
-        <div class="applications-section">
-          <div class="applications-container">
-            <div class="app-pills">
-              <button class="app-pill coming-soon" id="lokifinance">
-                <span class="app-icon">💰</span>
-                Finance
-              </button>
-              <button class="app-pill coming-soon" id="lokichat">
-                <span class="app-icon">💬</span>
-                Chat
-              </button>
-              <button class="app-pill" id="sudoku">
-                <span class="app-icon">🧩</span>
-                Sudoku
-              </button>
-              <button class="app-pill" id="nube">
-                <span class="app-icon">☁️</span>
-                Nube
-              </button>
-              <button class="app-pill coming-soon" id="proximamente">
-                <span class="app-icon">🚀</span>
-                Prónto
-              </button>
+          <h1 class="main-title" data-parallax data-speed="0.1">
+            LokiHub Cloud
+          </h1>
+
+          <p class="subtitle" data-parallax data-speed="0.12">
+            Todo lo que necesitas al alcance de un click
+          </p>
+
+          <div class="hero-buttons">
+            <button class="primary-button" id="heroLogin">Comenzar ahora</button>
+            <a class="secondary-button" href="#proyectos">Explorar proyectos</a>
+          </div>
+
+          <!-- Pills -->
+          <div class="applications-section">
+            <div class="applications-container glass">
+              <div class="app-pills">
+                <button
+                  class="app-pill coming-soon"
+                  id="lokifinance"
+                  aria-label="LokiFinance (Pronto)"
+                >
+                  <span class="app-icon">💰</span>
+                  Finance
+                  <span class="soon">Pronto</span>
+                </button>
+
+                <button
+                  class="app-pill coming-soon"
+                  id="lokichat"
+                  aria-label="LokiChat (Pronto)"
+                >
+                  <span class="app-icon">💬</span>
+                  Chat
+                  <span class="soon">Pronto</span>
+                </button>
+
+                <button class="app-pill" id="sudoku" aria-label="Sudoku">
+                  <span class="app-icon">🧩</span>
+                  Sudoku
+                </button>
+
+                <button class="app-pill" id="nube" aria-label="Nube">
+                  <span class="app-icon">☁️</span>
+                  Nube
+                </button>
+
+                <button
+                  class="app-pill coming-soon"
+                  id="proximamente"
+                  aria-label="Próximamente"
+                >
+                  <span class="app-icon">🚀</span>
+                  Más
+                  <span class="soon">Pronto</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- CC-->
+          <div
+            class="hero-showcase"
+            data-parallax
+            data-speed="0.18"
+            aria-hidden="true"
+          >
+            <div class="showcase-card glass tilt">
+              <div class="showcase-header">
+                <span class="dot red"></span>
+                <span class="dot yellow"></span>
+                <span class="dot green"></span>
+              </div>
+              <div class="showcase-body code-lines">
+                <span>&lt;LokiHub /&gt;</span>
+                <span>// proyectos, nube y juegos</span>
+                <span>const meow = () =&gt; "Prrrr...";</span>
+                <span>deploy("cloud.lokihub.cloud")</span>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </header>
 
-    <!-- FEATURES-->
-    <section class="features">
-      <div class="features-wrapper">
-        <h2 class="feature-title">Todo en el mismo lugar</h2>
-        <p class="feature-desc">Accede a los mejores proyectos desde un solo lugar</p>
+    <!-- PROYECTOS -->
+    <section id="proyectos" class="section">
+      <div class="container">
+        <div class="section-head">
+          <h2 class="feature-title">Proyectos</h2>
+          <p class="feature-desc">Actuales y en camino</p>
+        </div>
 
+        <div class="projects-grid">
+          <article class="card glass reveal" data-href="https://cloud.lokihub.cloud">
+            <div class="card-badge">En línea</div>
+            <h3>☁️ Nube</h3>
+            <p>Archivos privados y compartidos, rápido y seguro.</p>
+          </article>
 
+          <article class="card glass reveal" data-href="https://lokihub.cloud/sudoku">
+            <div class="card-badge">En línea</div>
+            <h3>🧩 Sudoku</h3>
+            <p>Pulido, con modo oscuro y animaciones.</p>
+          </article>
+
+          <article class="card glass reveal soon-card">
+            <div class="card-badge soon">Pronto</div>
+            <h3>💬 LokiChat</h3>
+            <p>Chat minimalista con presencia en tiempo real.</p>
+          </article>
+
+          <article class="card glass reveal soon-card">
+            <div class="card-badge soon">Pronto</div>
+            <h3>💰 LokiFinance</h3>
+            <p>Dashboard financiero personal con gráficos.</p>
+          </article>
+        </div>
       </div>
     </section>
-  
-    <!--  FOOTER -->
+
+    <!-- ROADMAP -->
+    <section id="roadmap" class="section">
+      <div class="container">
+        <div class="section-head">
+          <h2 class="feature-title">Roadmap</h2>
+          <p class="feature-desc">Lo que viene en las próximas semanas</p>
+        </div>
+
+        <ol class="timeline">
+          <li class="tl-item reveal">
+            <span class="tl-dot"></span>
+            <div class="tl-card glass">
+              <h4>Integración SSO LokiHub</h4>
+              <p>Un solo login para todas tus apps.</p>
+            </div>
+          </li>
+
+          <li class="tl-item reveal faded">
+            <span class="tl-dot"></span>
+            <div class="tl-card glass">
+              <h4>LokiFinance Beta</h4>
+              <p>Conexión bancaria y presupuestos.</p>
+            </div>
+          </li>
+
+          <li class="tl-item reveal faded">
+            <span class="tl-dot"></span>
+            <div class="tl-card glass">
+              <h4>Cliente móvil</h4>
+              <p>Accede a tu nube desde iOS/Android.</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about" class="section">
+      <div class="container">
+        <div class="about-grid">
+          <div class="about-copy reveal glass">
+            <h3>Minimalismo con impacto</h3>
+            <p>
+              Diseño glassmorphism, animaciones sutiles y micro‑interacciones que no
+              distraen del contenido.
+            </p>
+            <ul class="checks">
+              <li>
+                <i class="fa-regular fa-circle-check"></i>
+                Parallax suave al scroll
+              </li>
+              <li>
+                <i class="fa-regular fa-circle-check"></i>
+                100% responsive
+              </li>
+              <li>
+                <i class="fa-regular fa-circle-check"></i>
+                Accesible (teclado/ARIA)
+              </li>
+            </ul>
+             <div class="stat hint">* demo visual</div>
+          </div>
+
+          <div class="about-visual reveal glass">
+            <div class="stat">
+              <span class="stat-num">1.2Gbps</span>
+              <span class="stat-label">Velocidad de descarga</span>
+            </div>
+            <div class="stat">
+              <span class="stat-num">374Mbps</span>
+              <span class="stat-label">Velocidad de subida</span>
+            </div>
+            <div class="stat hint">* demo visual</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
     <footer class="footer">
       <div class="footer-container">
         <div class="loki-cat-container">
           <div class="speech-bubble">
             <span class="bubble-text">Prrrr...</span>
           </div>
+
           <div class="loki-cat" id="lokiCat">
             <img src="loki.png" alt="Loki el gatito" />
             <div class="purr-animation"></div>
           </div>
         </div>
-        <div class="created-by">
+
+        <div class="created-by glass">
           <span>Creado con ❤️ por LokiHub</span>
+
           <div class="social-icons">
-            <a href="https://facebook.com" target="_blank" aria-label="Facebook">
-              <i class="fa-brands fa-facebook"></i>
-            </a>
             <a href="https://instagram.com" target="_blank" aria-label="Instagram">
               <i class="fa-brands fa-instagram"></i>
             </a>
