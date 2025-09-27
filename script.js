@@ -6,15 +6,15 @@
 
 // Links rápidos (apps)
 document.getElementById('sudoku').onclick = () => {
-  window.location.href = 'https://lokihub.cloud/sudoku';
+  window.location.href = '/sudoku';
 };
 
 document.getElementById('nube').onclick = () => {
-  window.location.href = 'https://cloud.lokihub.cloud';
+  window.location.href = '#';
 };
 
 document.getElementById('nubenav').onclick = () => {
-  window.location.href = 'https://cloud.lokihub.cloud';
+  window.location.href = '#';
 };
 
 document.addEventListener('DOMContentLoaded', () => {
