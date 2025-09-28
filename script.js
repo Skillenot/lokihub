@@ -9,8 +9,8 @@ document.getElementById('sudoku').onclick = () => {
   window.location.href = '/sudoku';
 };
 
-document.getElementById('nube').onclick = () => {
-  window.location.href = '#';
+document.getElementById('wordle').onclick = () => {
+  window.location.href = '/wordle';
 };
 
 document.getElementById('nubenav').onclick = () => {

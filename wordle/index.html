@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wordle - Lokihub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-fondo: #0D0C1D; /* Negro azulado profundo */
+            --color-lila-brillante: #C895FF;
+            --color-morado-neon: #A060FF;
+            --color-cristal: rgba(255, 255, 255, 0.07);
+            --color-borde-cristal: rgba(255, 255, 255, 0.1);
+            --color-texto: #F4F4F9;
+            --color-texto-secundario: #B4B4D8;
+            --color-correcto: #538d4e;
+            --color-presente: #b59f3b;
+            --color-ausente: #3a3a3c;
+            --fuente-principal: 'Poppins', sans-serif;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            height: 100%;
+        }
+
+        body {
+            font-family: var(--fuente-principal);
+            background-color: var(--color-fondo);
+            color: var(--color-texto);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 10px;
+        }
+
+        #game-container {
+            width: 100%;
+            max-width: 500px;
+            height: 100%;
+            max-height: 900px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        header {
+            width: 100%;
+            text-align: center;
+            padding: 10px 0;
+        }
+
+        header h1 {
+            font-size: clamp(2rem, 8vw, 2.5rem);
+            font-weight: 700;
+            color: var(--color-lila-brillante);
+            text-shadow: 0 0 8px var(--color-morado-neon), 0 0 20px rgba(160, 96, 255, 0.5);
+            letter-spacing: 2px;
+        }
+
+        #board-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-grow: 1;
+        }
+
+        #board {
+            display: grid;
+            grid-template-rows: repeat(6, 1fr);
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            width: clamp(280px, 90vw, 350px);
+            height: clamp(340px, 110vw, 420px);
+        }
+
+        .tile {
+            width: 100%;
+            height: 100%;
+            border: 2px solid var(--color-ausente);
+            font-size: clamp(1.8rem, 5vw, 2.2rem);
+            font-weight: 600;
+            text-transform: uppercase;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.6s, background-color 0.3s, border-color 0.3s;
+            transform-style: preserve-3d;
+            position: relative;
+        }
+        
+        .tile.filled {
+            border-color: var(--color-borde-cristal);
+            animation: pop 0.2s ease-out;
+        }
+
+        @keyframes pop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .tile .front, .tile .back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            border-radius: 4px; /* Sutil redondeo */
+        }
+        
+        .tile .front {
+            background-color: transparent;
+        }
+
+        .tile .back {
+            transform: rotateX(180deg);
+            border: 2px solid transparent;
+        }
+        
+        .tile.reveal {
+            transform: rotateX(180deg);
+        }
+
+        .tile.correct .back { background-color: var(--color-correcto); border-color: var(--color-correcto); }
+        .tile.present .back { background-color: var(--color-presente); border-color: var(--color-presente); }
+        .tile.absent .back { background-color: var(--color-ausente); border-color: var(--color-ausente); }
+
+        #keyboard {
+            width: 100%;
+            user-select: none;
+        }
+
+        .keyboard-row {
+            display: flex;
+            justify-content: center;
+            margin: 0 auto 8px;
+            gap: 6px;
+            width: 100%;
+        }
+
+        .key {
+            font-family: var(--fuente-principal);
+            font-size: clamp(0.7rem, 2.5vw, 1rem);
+            font-weight: 600;
+            height: 50px;
+            border-radius: 6px;
+            border: none;
+            color: var(--color-texto);
+            background-color: #45435E; /* Un tono gris-morado para las teclas */
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-transform: uppercase;
+        }
+
+        .key:hover {
+            background-color: #5E5C7B;
+        }
+        .key:active {
+            transform: scale(0.95);
+        }
+
+        .key.large {
+            flex-grow: 1.5;
+            font-size: 0.8rem;
+        }
+        
+        .key.correct { background-color: var(--color-correcto); }
+        .key.present { background-color: var(--color-presente); }
+        .key.absent { background-color: var(--color-ausente); }
+
+        /* Modal de Récords y Notificaciones */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(13, 12, 29, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: linear-gradient(145deg, rgba(30, 30, 50, 0.6), rgba(60, 60, 90, 0.5));
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+        }
+        
+        .modal.show .modal-content {
+            transform: scale(1);
+        }
+        
+        .modal-content h2 {
+            color: var(--color-lila-brillante);
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+        }
+        
+        .modal-content p {
+            margin-bottom: 0.5rem;
+            color: var(--color-texto-secundario);
+            font-size: 1.1rem;
+        }
+
+        #records-list {
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--color-borde-cristal);
+        }
+        
+        #records-list h3 {
+            margin-bottom: 1rem;
+            color: var(--color-texto);
+        }
+        
+        #records-list p {
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        #play-again-button {
+            font-family: var(--fuente-principal);
+            font-weight: 600;
+            background: var(--color-morado-neon);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 1.5rem;
+            transition: background-color 0.2s, box-shadow 0.2s, transform 0.2s;
+            box-shadow: 0 0 15px rgba(160, 96, 255, 0.5);
+        }
+        
+        #play-again-button:hover {
+            background-color: var(--color-lila-brillante);
+            box-shadow: 0 0 25px rgba(200, 149, 255, 0.7);
+            transform: translateY(-2px);
+        }
+
+        /* Notificación Toast */
+        #toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(145deg, rgba(30, 30, 50, 0.8), rgba(60, 60, 90, 0.7));
+            backdrop-filter: blur(10px);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--color-borde-cristal);
+            color: white;
+            font-weight: 600;
+            z-index: 2000;
+            visibility: hidden;
+            opacity: 0;
+            transition: all 0.4s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        #toast.show {
+            top: 40px;
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="game-container">
+        <header>
+            <h1>Wordle Beta</h1>
+        </header>
+
+        <div id="board-container">
+            <div id="board"></div>
+        </div>
+
+        <div id="keyboard">
+            <div class="keyboard-row">
+                <button class="key" data-key="q">Q</button>
+                <button class="key" data-key="w">W</button>
+                <button class="key" data-key="e">E</button>
+                <button class="key" data-key="r">R</button>
+                <button class="key" data-key="t">T</button>
+                <button class="key" data-key="y">Y</button>
+                <button class="key" data-key="u">U</button>
+                <button class="key" data-key="i">I</button>
+                <button class="key" data-key="o">O</button>
+                <button class="key" data-key="p">P</button>
+            </div>
+            <div class="keyboard-row">
+                <button class="key" data-key="a">A</button>
+                <button class="key" data-key="s">S</button>
+                <button class="key" data-key="d">D</button>
+                <button class="key" data-key="f">F</button>
+                <button class="key" data-key="g">G</button>
+                <button class="key" data-key="h">H</button>
+                <button class="key" data-key="j">J</button>
+                <button class="key" data-key="k">K</button>
+                <button class="key" data-key="l">L</button>
+                <button class="key" data-key="ñ">Ñ</button>
+            </div>
+            <div class="keyboard-row">
+                <button class="key large" data-key="enter">ENTER</button>
+                <button class="key" data-key="z">Z</button>
+                <button class="key" data-key="x">X</button>
+                <button class="key" data-key="c">C</button>
+                <button class="key" data-key="v">V</button>
+                <button class="key" data-key="b">B</button>
+                <button class="key" data-key="n">N</button>
+                <button class="key" data-key="m">M</button>
+                <button class="key large" data-key="backspace">⌫</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="records-modal" class="modal">
+        <div class="modal-content">
+            <h2 id="modal-title">Resultado</h2>
+            <p id="modal-word"></p>
+            <div id="records-list">
+                <h3>🏆 Récords</h3>
+                <p><strong>Mejor Tiempo:</strong> <span id="best-time">N/A</span></p>
+                <p><strong>Menos Intentos:</strong> <span id="best-attempts">N/A</span></p>
+            </div>
+            <button id="play-again-button">Jugar de Nuevo</button>
+        </div>
+    </div>
+    
+    <div id="toast"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const words = [
+                "JUEGO", "TEXTO", "PLUMA", "LLAVE", "PIEZA", "MANGO", "FRESA", "GRITO",
+                "PLAZA", "FRUTA", "CREMA", "CLAVO", "LIBRO", "LUCES", "LETRA", "MESAS",
+                "SILLA", "COSAS", "CASAS", "PERRO", "GATOS", "FLORA", "RELOJ", "PLAYA",
+                "CARRO", "AVION", "BARCO", "CIELO", "NUBES", "LLAMA", "QUESO", "BRAVO",
+                "POETA", "MUNDO", "AMIGO", "PASTA", "CORAL", "FAROL", "IDEAS", "JUNIO"
+            ];
+
+            const board = document.getElementById('board');
+            const keyboard = document.getElementById('keyboard');
+            const modal = document.getElementById('records-modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalWord = document.getElementById('modal-word');
+            const bestTimeEl = document.getElementById('best-time');
+            const bestAttemptsEl = document.getElementById('best-attempts');
+            const playAgainButton = document.getElementById('play-again-button');
+            const toast = document.getElementById('toast');
+            
+            const ROWS = 6;
+            const COLS = 5;
+
+            let state = {
+                secretWord: '',
+                currentRow: 0,
+                currentCol: 0,
+                grid: Array(ROWS).fill().map(() => Array(COLS).fill('')),
+                gameOver: false,
+                startTime: null,
+            };
+
+            const ls = {
+                getRecords: () => {
+                    const records = localStorage.getItem('wordle_pro_records');
+                    return records ? JSON.parse(records) : { bestTime: null, bestAttempts: null };
+                },
+                saveRecords: (records) => {
+                    localStorage.setItem('wordle_pro_records', JSON.stringify(records));
+                },
+                saveGameState: (gameState) => {
+                    localStorage.setItem('wordle_pro_gamestate', JSON.stringify(gameState));
+                },
+                loadGameState: () => {
+                    const gameState = localStorage.getItem('wordle_pro_gamestate');
+                    return gameState ? JSON.parse(gameState) : null;
+                },
+                clearGameState: () => {
+                    localStorage.removeItem('wordle_pro_gamestate');
+                }
+            };
+            
+            function showToast(message) {
+                toast.textContent = message;
+                toast.classList.add('show');
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 2000);
+            }
+
+            function updateUIFromState() {
+                for (let r = 0; r < ROWS; r++) {
+                    for (let c = 0; c < COLS; c++) {
+                        const tile = board.children[r * COLS + c];
+                        const front = tile.querySelector('.front');
+                        front.textContent = state.grid[r][c];
+                        if(state.grid[r][c]) {
+                            tile.classList.add('filled');
+                        } else {
+                            tile.classList.remove('filled');
+                        }
+                    }
+                }
+                if (state.currentRow > 0) {
+                    for (let i = 0; i < state.currentRow; i++) {
+                        const guess = state.grid[i].join('');
+                        revealGuess(guess, i, true);
+                    }
+                }
+            }
+            
+            function init() {
+                const loadedState = ls.loadGameState();
+                if (loadedState && !loadedState.gameOver) {
+                    state = loadedState;
+                } else {
+                    startNewGame(false);
+                }
+                
+                board.innerHTML = '';
+                for (let i = 0; i < ROWS * COLS; i++) {
+                    const tile = document.createElement('div');
+                    tile.classList.add('tile');
+                    tile.innerHTML = '<div class="front"></div><div class="back"></div>';
+                    board.appendChild(tile);
+                }
+                updateUIFromState();
+                updateRecordsDisplay();
+            }
+
+            function startNewGame(resetUIFlag = true) {
+                state.secretWord = words[Math.floor(Math.random() * words.length)];
+                state.currentRow = 0;
+                state.currentCol = 0;
+                state.grid = Array(ROWS).fill().map(() => Array(COLS).fill(''));
+                state.gameOver = false;
+                state.startTime = new Date().getTime();
+                ls.clearGameState();
+                if(resetUIFlag) resetUI();
+            }
+            
+            function resetUI() {
+                const tiles = document.querySelectorAll('.tile');
+                tiles.forEach(tile => {
+                    tile.querySelector('.front').textContent = '';
+                    tile.querySelector('.back').textContent = '';
+                    if(tile.classList.contains('reveal')) {
+                        tile.style.transition = 'none';
+                        tile.classList.remove('reveal');
+                        void tile.offsetWidth;
+                        tile.style.transition = '';
+                    }
+                    tile.classList.remove('correct', 'present', 'absent', 'filled');
+                });
+                const keys = document.querySelectorAll('.key');
+                keys.forEach(key => {
+                    key.classList.remove('correct', 'present', 'absent');
+                });
+                modal.classList.remove('show');
+            }
+
+            function handleKeyPress(key) {
+                if (state.gameOver) return;
+
+                if (key === 'enter') {
+                    if (state.currentCol === COLS) {
+                        submitGuess();
+                    } else {
+                        showToast('Palabra incompleta');
+                    }
+                } else if (key === 'backspace') {
+                    deleteLetter();
+                } else if (state.currentCol < COLS && /^[a-zA-ZñÑ]$/.test(key)) {
+                    addLetter(key.toUpperCase());
+                }
+            }
+
+            function addLetter(letter) {
+                state.grid[state.currentRow][state.currentCol] = letter;
+                const tile = board.children[state.currentRow * COLS + state.currentCol];
+                tile.querySelector('.front').textContent = letter;
+                tile.classList.add('filled');
+                state.currentCol++;
+                ls.saveGameState(state);
+            }
+
+            function deleteLetter() {
+                if (state.currentCol > 0) {
+                    state.currentCol--;
+                    state.grid[state.currentRow][state.currentCol] = '';
+                    const tile = board.children[state.currentRow * COLS + state.currentCol];
+                    tile.querySelector('.front').textContent = '';
+                    tile.classList.remove('filled');
+                    ls.saveGameState(state);
+                }
+            }
+
+            function submitGuess() {
+                const guess = state.grid[state.currentRow].join('');
+                
+                revealGuess(guess, state.currentRow);
+                
+                setTimeout(() => {
+                    if (guess === state.secretWord) {
+                        state.gameOver = true;
+                        const timeTaken = Math.floor((new Date().getTime() - state.startTime) / 1000);
+                        updateRecords(timeTaken, state.currentRow + 1);
+                        showEndGameModal(true, timeTaken);
+                    } else if (state.currentRow + 1 === ROWS) {
+                        state.gameOver = true;
+                        const timeTaken = Math.floor((new Date().getTime() - state.startTime) / 1000);
+                        showEndGameModal(false, timeTaken);
+                    }
+                    ls.saveGameState(state);
+                }, COLS * 300);
+
+                state.currentRow++;
+                state.currentCol = 0;
+            }
+
+            function revealGuess(guess, row, isInstant = false) {
+                const secret = state.secretWord.split('');
+                const guessLetters = guess.split('');
+                const letterCount = {};
+                secret.forEach(letter => { letterCount[letter] = (letterCount[letter] || 0) + 1; });
+
+                const statuses = Array(COLS).fill(null);
+
+                guessLetters.forEach((letter, index) => {
+                    if (letter === secret[index]) {
+                        statuses[index] = 'correct';
+                        letterCount[letter]--;
+                    }
+                });
+
+                guessLetters.forEach((letter, index) => {
+                    if (statuses[index] === null) {
+                        if (secret.includes(letter) && letterCount[letter] > 0) {
+                            statuses[index] = 'present';
+                            letterCount[letter]--;
+                        } else {
+                            statuses[index] = 'absent';
+                        }
+                    }
+                });
+                
+                const rowTiles = Array.from(board.children).slice(row * COLS, (row * COLS) + COLS);
+                rowTiles.forEach((tile, index) => {
+                    updateTileAndKey(tile, guessLetters[index], statuses[index], isInstant, index);
+                });
+            }
+
+            function updateTileAndKey(tile, letter, status, isInstant, index) {
+                const delay = isInstant ? 0 : index * 300;
+                
+                setTimeout(() => {
+                    tile.classList.add('reveal');
+                    tile.querySelector('.back').textContent = letter;
+                    tile.classList.add(status);
+
+                    const key = document.querySelector(`.key[data-key="${letter.toLowerCase()}"]`);
+                    if (!key) return;
+
+                    const currentKeyStatus = key.className;
+                    if (status === 'correct') {
+                        key.classList.remove('present', 'absent');
+                        key.classList.add('correct');
+                    } else if (status === 'present' && !currentKeyStatus.includes('correct')) {
+                        key.classList.remove('absent');
+                        key.classList.add('present');
+                    } else if (status === 'absent' && !currentKeyStatus.includes('correct') && !currentKeyStatus.includes('present')) {
+                        key.classList.add('absent');
+                    }
+                }, delay);
+            }
+
+            function updateRecords(time, attempts) {
+                const records = ls.getRecords();
+                
+                if (records.bestTime === null || time < records.bestTime) {
+                    records.bestTime = time;
+                }
+                if (records.bestAttempts === null || attempts < records.bestAttempts) {
+                    records.bestAttempts = attempts;
+                }
+                
+                ls.saveRecords(records);
+                updateRecordsDisplay();
+            }
+            
+            function updateRecordsDisplay() {
+                const records = ls.getRecords();
+                bestTimeEl.textContent = records.bestTime !== null ? `${records.bestTime}s` : 'N/A';
+                bestAttemptsEl.textContent = records.bestAttempts !== null ? records.bestAttempts : 'N/A';
+            }
+
+            function showEndGameModal(isWin, time) {
+                ls.clearGameState();
+                modal.classList.add('show');
+                if (isWin) {
+                    modalTitle.textContent = "¡Felicidades!";
+                    modalWord.textContent = `La palabra era: ${state.secretWord}. Tiempo: ${time}s.`;
+                } else {
+                    modalTitle.textContent = "Fin del Juego";
+                    modalWord.textContent = `La palabra correcta era: ${state.secretWord}.`;
+                }
+            }
+
+            keyboard.addEventListener('click', (e) => {
+                if (e.target.matches('[data-key]')) {
+                    handleKeyPress(e.target.dataset.key);
+                }
+            });
+
+            document.addEventListener('keydown', (e) => {
+                let key = e.key.toLowerCase();
+                if (key === 'enter') {
+                    handleKeyPress('enter');
+                } else if (key === 'backspace') {
+                    handleKeyPress('backspace');
+                } else if (key.length === 1 && (key >= 'a' && key <= 'z' || key === 'ñ')) {
+                    handleKeyPress(key);
+                }
+            });
+
+            playAgainButton.addEventListener('click', () => {
+                startNewGame();
+                resetUI();
+            });
+
+            init();
+        });
+    </script>
+</body>
+</html>
