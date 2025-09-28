@@ -372,12 +372,62 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const words = [
-                "JUEGO", "TEXTO", "PLUMA", "LLAVE", "PIEZA", "MANGO", "FRESA", "GRITO",
-                "PLAZA", "FRUTA", "CREMA", "CLAVO", "LIBRO", "LUCES", "LETRA", "MESAS",
-                "SILLA", "COSAS", "CASAS", "PERRO", "GATOS", "FLORA", "RELOJ", "PLAYA",
-                "CARRO", "AVION", "BARCO", "CIELO", "NUBES", "LLAMA", "QUESO", "BRAVO",
-                "POETA", "MUNDO", "AMIGO", "PASTA", "CORAL", "FAROL", "IDEAS", "JUNIO"
-            ];
+    // Palabras Originales Verificadas
+    "JUEGO", "TEXTO", "PLUMA", "LLAVE", "PIEZA", "MANGO", "FRESA", "GRITO",
+    "PLAZA", "FRUTA", "CREMA", "CLAVO", "LIBRO", "LUCES", "LETRA", "MESAS",
+    "SILLA", "COSAS", "CASAS", "PERRO", "GATOS", "FLORA", "RELOJ", "PLAYA",
+    "CARRO", "AVION", "BARCO", "CIELO", "NUBES", "LLAMA", "QUESO", "BRAVO",
+    "POETA", "MUNDO", "AMIGO", "PASTA", "CORAL", "FAROL", "IDEAS", "JUNIO",
+
+    // Nuevas Palabras 
+    "ABEJA", "ACTOR", "ADIOS", "AGRIO", "AGUDO", "ALADO", "ALBUM", "ALTAR",
+    "ALTO", "ANCHO", "ANGEL", "ANIMO", "ANTES", "ARBOL", "ARDER", "ARENA",
+    "ARROZ", "ATRAS", "AUDIO", "AUTOR", "BAILE", "BAJAR", "BALON", "BANCO",
+    "BAÑAR", "BEBER", "BICHO", "BLUSA", "BOMBA", "BOTAR", "BOTAS", "BOTON",
+    "BOXEO", "BRAZO", "BRISA", "BUENO", "BURRO", "BUSAR", "CABRA", "CALLE",
+    "CALVO", "CAMPO", "CANAL", "CANTA", "CAÑON", "CARNE", "CEBRA", "CEDRO",
+    "CERCA", "CERDO", "CHICO", "CHILE", "CICLO", "CIRCO", "CLASE", "CLAVO",
+    "COLOR", "COMER", "COÑAC", "CORAL", "CORTE", "CORTO", "COSTA", "CREER",
+    "CURAR", "CURSO", "DANZA", "DATOS", "DEBIL", "DECIR", "DEDOS", "DEJAR",
+    "DIETA", "DIOSA", "DOBLE", "DOLOR", "DONDE", "DULCE", "DUROS", "ENANO",
+    "ENERO", "ERROR", "EXTRA", "ETAPA", "FALSO", "FANGO", "FELIZ", "FIBRA",
+    "FICHA", "FINAL", "FIRMA", "FLACO", "FONDO", "FORMA", "FORRO", "FOSIL",
+    "FUEGO", "FUERA", "FURIA", "FUSIL", "GANAR", "GAFAS", "GLOBO", "GRADO",
+    "GRASA", "GRAVE", "GRANO", "GRAPA", "GRUPO", "HABLA", "HACER", "HEROE",
+    "HIELO", "HIJOS", "HORNO", "HOTEL", "HUMOR", "IGUAL", "JABON", "JAMON",
+    "JAULA", "JOVEN", "JULIO", "LABIO", "LADOS", "LAGOS", "LANZA", "LAPSO",
+    "LARGO", "LATIR", "LECHE", "LEJOS", "LENTO", "LIBRA", "LIDER", "LINEA",
+    "LISTO", "LOCAL", "LOGRO", "LUCHA", "LUNAR", "MADRE", "MAGIA", "MAIZ",
+    "MALO", "MAPA", "MARCA", "MAREA", "MARZO", "MAYOR", "MEDIA", "MEDIO",
+    "MEJOR", "MENOR", "MENOS", "MENTE", "METER", "MIEDO", "MITAD", "MODOS",
+    "MOLDE", "MONJE", "MONTA", "MORAL", "MORIR", "MOTOR", "MOVER", "MUCHO",
+    "MUJER", "MULTA", "MURAL", "NACER", "NADAR", "NARIZ", "NAVAL", "NEGRO",
+    "NEVAR", "NICHO", "NIVEL", "NORMA", "NOTAS", "NUEVO", "NUNCA", "OBRAS",
+    "OESTE", "OIDOS", "OLIVO", "ONDAS", "ORDEN", "OVEJA", "PADRE", "PAGAR",
+    "PALCO", "PALMA", "PANEL", "PAPEL", "PARAR", "PARDO", "PASEO", "PASOS",
+    "PATIO", "PAUSA", "PECHO", "PEDAL", "PEDIR", "PELEA", "PELOS", "PENAL",
+    "PERLA", "PESAR", "PESCA", "PILAR", "PIÑAS", "PINTA", "PISTA", "PIZZA",
+    "PODAR", "PODER", "POLLO", "POLVO", "PONER", "PORRO", "POZO", "PRADO",
+    "PRESA", "PRIMO", "PULSO", "PUNTO", "PUÑAL", "PURO", "QUEMA", "RADIO",
+    "RAMA", "RAPTO", "RATON", "RAZON", "REGLA", "REINA", "REINO", "REMAR",
+    "RESTO", "RICOS", "RISAS", "ROBAR", "ROBLE", "ROCAS", "RODEO", "ROJOS",
+    "ROMBO", "RONCO", "RONDA", "ROPAS", "ROSTRO", "RUBIO", "RUIDO", "RUMBO",
+    "SABOR", "SABIO", "SACAR", "SALIR", "SALON", "SALSA", "SALTO", "SALUD",
+    "SANTO", "SECAR", "SELLO", "SELVA", "SEÑAL", "SERIO", "SEXTO", "SIGLO",
+    "SOBRA", "SOBRE", "SOCIO", "SOLAR", "SOLO", "SOMOS", "SONAR", "SOPLO",
+    "SORDO", "SUAVE", "SUBIR", "SUCIO", "SUECO", "SUELO", "SUEÑO", "SUIZO",
+    "SUMAR", "SUPER", "TABLA", "TACO", "TALCO", "TALON", "TANDA", "TANGA",
+    "TAPAR", "TAPIA", "TARDE", "TAREA", "TECHO", "TEJAS", "TELON", "TEMOR",
+    "TENER", "TENIS", "TERCO", "TESIS", "TIBIO", "TIGRE", "TINTA", "TIRAR",
+    "TOCAR", "TOMAR", "TONTO", "TOPE", "TORPE", "TORRE", "TOSER", "TRAJE",
+    "TRAMO", "TRATO", "TRAZO", "TRIGO", "TRONO", "TROZO", "TRUCO", "TUBOS",
+    "TUMBA", "TUNEL", "TURNO", "TUTOR", "UNICO", "UNION", "UNTAR", "USADO",
+    "VACIO", "VAGON", "VAINA", "VALER", "VALLE", "VALOR", "VAPOR", "VARON",
+    "VASCO", "VELAS", "VENAS", "VENIR", "VENTA", "VERDE", "VERSO", "VIAJE",
+    "VIDEO", "VIENTO", "VINOS", "VISTA", "VITAL", "VIVIR", "VOCAL", "VOLAR",
+    "VOTAR", "VUELO", "YATE", "YEGUA", "YEMAS", "YESO", "YOGUR", "ZAFRA",
+    "ZANJA", "ZONA", "ZORRO", "ZURDO"
+];
 
             const board = document.getElementById('board');
             const keyboard = document.getElementById('keyboard');
