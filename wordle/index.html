@@ -597,7 +597,7 @@
                         const timeTaken = Math.floor((new Date().getTime() - state.startTime) / 1000);
                         updateRecords(timeTaken, state.currentRow + 1);
                         showEndGameModal(true, timeTaken);
-                    } else if (state.currentRow + 1 === ROWS) {
+                   } else if (state.currentRow === ROWS) {
                         state.gameOver = true;
                         const timeTaken = Math.floor((new Date().getTime() - state.startTime) / 1000);
                         showEndGameModal(false, timeTaken);
