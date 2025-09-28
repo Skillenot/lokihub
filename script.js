@@ -78,6 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const appHandlers = {
     lokifinance:   () => alert('💰 LokiFinance llegará pronto.'),
     lokichat:      () => alert('💬 LokiChat llegará pronto.'),
+    nube:      () => alert('☁️ Nube llegará pronto.'),
     proximamente:  () => alert('🚀 Nuevos proyectos en camino.'),
   };
   Object.keys(appHandlers).forEach(id => {
