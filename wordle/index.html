@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wordle - Lokihub</title>
+    <title>Wordle</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
     <style>
         :root {
             --bg: #1A1A1A;
@@ -14,19 +15,20 @@
             --container-border: rgba(255, 255, 255, 0.1);
             --text-primary: #FFFFFF;
             --text-secondary: #8A8A8A;
-            
             --tile-border: #4A4A4A;
             --tile-border-active: #7A7A7A;
-            
             --key-bg: #4A4A4A;
             --key-text: #FFFFFF;
-            
             --color-correcto: #538d4e;
             --color-presente: #b59f3b;
-            --color-ausente: #303030;
-            
+            --color-ausente: #161616;
             --radius: 16px;
-            --font-main: 'Inter', sans-serif;
+            --font-main: 'DM Sans', sans-serif; /* Cambiado a DM Sans */
+
+            /* Variables del nuevo estilo */
+            --glass:rgba(45, 45, 46, 0.2);
+            --glass-brd:rgba(255,255,255,.08);
+            --blur:blur(20px);
         }
 
         *, *::before, *::after {
@@ -35,9 +37,7 @@
             padding: 0;
         }
 
-        html, body {
-            height: 100%;
-        }
+        html { height: 100%; }
 
         body {
             font-family: var(--font-main);
@@ -47,13 +47,65 @@
                 linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
             background-size: 30px 30px;
             color: var(--text-primary);
-            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100%;
+        }
+
+        main {
+            flex-grow: 1; 
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 1rem;
+            width: 100%;
         }
 
+        /* --- ESTILOS DEL NAVBAR --- */
+        .nav{
+            width: 100%;
+            display:flex; 
+            justify-content:center; 
+            z-index:50; 
+            padding: 12px 0;
+        }
+        .nav-inner{
+            width:calc(100% - 24px); 
+            max-width:1100px; 
+            height:56px; 
+            display:flex; 
+            align-items:center; 
+            justify-content:space-between;
+            padding:0 18px; 
+            border-radius:999px; 
+            border:1px solid var(--glass-brd);
+            background:var(--glass); 
+            backdrop-filter:var(--blur);
+            box-shadow:0 8px 32px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.06);
+        }
+        a, a:visited {
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+        .brand{
+            display:flex; 
+            gap:10px; 
+            align-items:center; 
+            font-weight:700
+        }
+        .brand i{opacity:.9}
+        .brand span{letter-spacing:.2px}
+        .nav a.btn-home{
+            padding:8px 14px; 
+            border-radius:10px; 
+            text-decoration:none; 
+            color:#111; 
+            background:#fff; 
+            font-weight:600;
+        }
+        .nav a.btn-home:hover{filter:brightness(.95)}
+
+    
         #game-container {
             background: var(--container-bg);
             backdrop-filter: blur(25px);
@@ -61,7 +113,6 @@
             border: 1px solid var(--container-border);
             border-radius: var(--radius);
             box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
-            
             width: 100%;
             max-width: 520px;
             padding: 2rem;
@@ -70,14 +121,10 @@
             gap: 2.5rem;
         }
 
-        header {
-            text-align: center;
-        }
-
+        header { text-align: center; }
         header h1 {
             font-size: 2.5rem;
             font-weight: 700;
-            color: var(--text-primary);
         }
 
         #board {
@@ -104,15 +151,11 @@
             transform-style: preserve-3d;
             position: relative;
         }
-        
         .tile.filled {
             border-color: var(--tile-border-active);
             animation: pop 0.2s ease-out;
         }
-        
-        @keyframes pop {
-            50% { transform: scale(1.1); }
-        }
+        @keyframes pop { 50% { transform: scale(1.1); } }
 
         .tile .front, .tile .back {
             position: absolute;
@@ -125,33 +168,19 @@
             -webkit-backface-visibility: hidden;
             border-radius: 6px;
         }
-        
-        .tile .back {
-            transform: rotateX(180deg);
-            color: white;
-            border: none;
-        }
-        
-        .tile.reveal {
-            transform: rotateX(180deg);
-            border-color: transparent;
-        }
-
+        .tile .back { transform: rotateX(180deg); color: white; border: none; }
+        .tile.reveal { transform: rotateX(180deg); border-color: transparent; }
         .tile.correct .back { background-color: var(--color-correcto); }
         .tile.present .back { background-color: var(--color-presente); }
         .tile.absent .back { background-color: var(--color-ausente); }
 
-        #keyboard {
-            user-select: none;
-        }
-        
+        #keyboard { user-select: none; }
         .keyboard-row {
             display: flex;
             justify-content: center;
             margin: 0 auto 8px;
             gap: 6px;
         }
-
         .key {
             font-family: var(--font-main);
             font-size: clamp(0.8rem, 2.5vw, 1rem);
@@ -169,134 +198,210 @@
             align-items: center;
             text-transform: uppercase;
         }
-
-        .key:hover {
-            background: #6A6A6A;
-        }
-        .key:active {
-            transform: scale(0.95);
-        }
-
+        .key:hover { background: #6A6A6A; }
+        .key:active { transform: scale(0.95); }
         .key.large { flex-grow: 1.5; font-size: 0.8rem; }
         .key.correct { background: var(--color-correcto); }
         .key.present { background: var(--color-presente); }
         .key.absent { background: var(--color-ausente); }
 
         .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s, visibility 0.3s;
-            z-index: 1000;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.6); display: flex; justify-content: center; align-items: center;
+            opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s; z-index: 1000;
         }
-        
         .modal.show { opacity: 1; visibility: visible; }
-        
         .modal-content {
-            background: var(--container-bg);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border: 1px solid var(--container-border);
-            border-radius: var(--radius);
-            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
-            width: 90%;
-            max-width: 400px;
-            padding: 2rem;
-            text-align: center;
+            background: var(--container-bg); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--container-border); border-radius: var(--radius);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5); width: 90%; max-width: 400px;
+            padding: 2rem; text-align: center;
         }
-
-        .modal-content h2 { font-size: 2rem; margin-bottom: 1rem; color: var(--text-primary); }
+        .modal-content h2 { font-size: 2rem; margin-bottom: 1rem; }
         .modal-content p { color: var(--text-secondary); font-size: 1.1rem; }
         #records-list { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--container-border); }
         #records-list h3 { margin-bottom: 1rem; }
-        
         #play-again-button {
-            margin-top: 2rem;
-            padding: 12px 20px;
-            border-radius: 12px;
-            border: none;
-            background: var(--text-primary);
-            color: var(--bg);
-            font-weight: 700;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all .25s;
+            margin-top: 2rem; padding: 12px 20px; border-radius: 12px; border: none;
+            background: var(--text-primary); color: var(--bg); font-weight: 700;
+            font-size: 1rem; cursor: pointer; transition: all .25s;
         }
         #play-again-button:hover { transform: scale(1.05); }
-        
+
         #toast {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 1rem 1.5rem;
-            font-weight: 600;
-            z-index: 2000;
-            visibility: hidden;
-            opacity: 0;
-            transition: all 0.4s ease;
-            background: var(--container-bg);
-            backdrop-filter: blur(25px);
-            border: 1px solid var(--container-border);
-            border-radius: 12px;
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+            padding: 1rem 1.5rem; font-weight: 600; z-index: 2000;
+            visibility: hidden; opacity: 0; transition: all 0.4s ease;
+            background: var(--container-bg); backdrop-filter: blur(25px);
+            border: 1px solid var(--container-border); border-radius: 12px;
         }
         #toast.show { top: 40px; visibility: visible; opacity: 1; }
+        
+        /* --- ESTILOS DEL FOOTER --- */
+        .footer {
+            padding: 40px 16px 20px; 
+            display: flex;
+            justify-content: center;
+        }
+        .footer-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 24px;
+            max-width: 480px;
+        }
+        .loki-cat-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        .speech-bubble {
+            background: var(--glass);
+            backdrop-filter: var(--blur);
+            border: 1px solid var(--glass-brd);
+            border-radius: 20px;
+            padding: 10px 16px;
+        }
+        .speech-bubble:after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 8px solid var(--glass);
+        }
+        .bubble-text {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .loki-cat img {
+            width: 84px;
+            height: 84px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid rgba(255,255,255,.1);
+            cursor: pointer;
+        }
+        .created-by {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            padding: 14px 18px;
+            width: 100%;
+        }
+        .social-icons {
+            display: flex;
+            gap: 14px;
+        }
+        .social-icons a {
+            font-size: 18px;
+            transition: opacity .2s;
+        }
+        .social-icons a:hover { opacity: .8; }
+
+
+header h1 {
+  position: relative; 
+  display: inline-block; 
+  padding-right: 45px;
+}
+
+.beta-tag {
+  position: absolute;   
+  top: 0;              
+  right: 0;            
+  
+
+  font-size: 10px;      
+  font-weight: bold;
+  color: #ffffff;
+  background-color: #538d4e;
+  padding: 2px 5px;
+  border-radius: 4px;
+  white-space: nowrap; 
+}
     </style>
 </head>
 <body>
-    <div id="game-container">
-        <header>
-            <h1>Wordle 1.0</h1>
-        </header>
-        
-        <div id="board"></div>
+    <nav class="nav">
+      <div class="nav-inner">
+        <a class="brand" href="#"><i class="fa-solid fa-cat"></i><span>LokiHub</span></a>
+        <a class="btn-home" href="#">Volver</a>
+      </div>
+    </nav>
 
-        <div id="keyboard">
-            <div class="keyboard-row">
-                <button class="key" data-key="q">Q</button>
-                <button class="key" data-key="w">W</button>
-                <button class="key" data-key="e">E</button>
-                <button class="key" data-key="r">R</button>
-                <button class="key" data-key="t">T</button>
-                <button class="key" data-key="y">Y</button>
-                <button class="key" data-key="u">U</button>
-                <button class="key" data-key="i">I</button>
-                <button class="key" data-key="o">O</button>
-                <button class="key" data-key="p">P</button>
-            </div>
-            <div class="keyboard-row">
-                <button class="key" data-key="a">A</button>
-                <button class="key" data-key="s">S</button>
-                <button class="key" data-key="d">D</button>
-                <button class="key" data-key="f">F</button>
-                <button class="key" data-key="g">G</button>
-                <button class="key" data-key="h">H</button>
-                <button class="key" data-key="j">J</button>
-                <button class="key" data-key="k">K</button>
-                <button class="key" data-key="l">L</button>
-                <button class="key" data-key="ñ">Ñ</button>
-            </div>
-            <div class="keyboard-row">
-                <button class="key large" data-key="enter">Enter</button>
-                <button class="key" data-key="z">Z</button>
-                <button class="key" data-key="x">X</button>
-                <button class="key" data-key="c">C</button>
-                <button class="key" data-key="v">V</button>
-                <button class="key" data-key="b">B</button>
-                <button class="key" data-key="n">N</button>
-                <button class="key" data-key="m">M</button>
-                <button class="key large" data-key="backspace">⌫</button>
+    <main>
+        <div id="game-container">
+         <header>
+  <h1>Wordle <span class="beta-tag">Beta 0.2</span></h1>
+</header>
+            
+            <div id="board"></div>
+    
+            <div id="keyboard">
+                <div class="keyboard-row">
+                    <button class="key" data-key="q">Q</button>
+                    <button class="key" data-key="w">W</button>
+                    <button class="key" data-key="e">E</button>
+                    <button class="key" data-key="r">R</button>
+                    <button class="key" data-key="t">T</button>
+                    <button class="key" data-key="y">Y</button>
+                    <button class="key" data-key="u">U</button>
+                    <button class="key" data-key="i">I</button>
+                    <button class="key" data-key="o">O</button>
+                    <button class="key" data-key="p">P</button>
+                </div>
+                <div class="keyboard-row">
+                    <button class="key" data-key="a">A</button>
+                    <button class="key" data-key="s">S</button>
+                    <button class="key" data-key="d">D</button>
+                    <button class="key" data-key="f">F</button>
+                    <button class="key" data-key="g">G</button>
+                    <button class="key" data-key="h">H</button>
+                    <button class="key" data-key="j">J</button>
+                    <button class="key" data-key="k">K</button>
+                    <button class="key" data-key="l">L</button>
+                    <button class="key" data-key="ñ">Ñ</button>
+                </div>
+                <div class="keyboard-row">
+                    <button class="key large" data-key="enter">Enter</button>
+                    <button class="key" data-key="z">Z</button>
+                    <button class="key" data-key="x">X</button>
+                    <button class="key" data-key="c">C</button>
+                    <button class="key" data-key="v">V</button>
+                    <button class="key" data-key="b">B</button>
+                    <button class="key" data-key="n">N</button>
+                    <button class="key" data-key="m">M</button>
+                    <button class="key large" data-key="backspace">⌫</button>
+                </div>
             </div>
         </div>
-    </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-container">
+        <div class="loki-cat-container">
+          <div class="speech-bubble"><span class="bubble-text" id="bubble">Prrrr...</span></div>
+          <div class="loki-cat" id="lokiCat"><img src="../loki.png" alt="Loki el gatito"/></div>
+        </div>
+        <div class="created-by">
+          <span>Creado con ❤️ por LokiHub</span>
+          <div class="social-icons">
+            <a href="#" target="_blank" aria-label="Facebook"><i class="fa-brands fa-facebook"></i></a>
+            <a href="#" target="_blank" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#" target="_blank" aria-label="Github"><i class="fa-brands fa-github"></i></a>
+            <a href="#" target="_blank" aria-label="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
+          </div>
+        </div>
+      </div>
+    </footer>
 
     <div id="records-modal" class="modal">
         <div class="modal-content">
@@ -314,610 +419,590 @@
     <div id="toast"></div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Dictionary
-            const wordList = [
-                "ABAJO", "ABEJA", "ABETO", "ABRIL", "ABRIR", "ACTOR", "ADIOS", "ADOBE",
-                "AEREO", "AGATA", "AGIL", "AGOSTO", "AGRIO", "AGUAS", "AGUDO", "AGUILA",
-                "AGUJA", "AHOGO", "AHORA", "AIREO", "AIRES", "AJENO", "ALADO", "ALARMA",
-                "ALBUM", "ALDEA", "ALEJE", "ALETA", "ALFIL", "ALGAS", "ALGO", "ALIAS",
-                "ALIEN", "ALIÑO", "ALLI", "ALMA", "ALOHA", "ALOJA", "ALPES", "ALTAR",
-                "ALTEA", "ALTO", "ALTOS", "ALUD", "AMABA", "AMADO", "AMAGO", "AMAR",
-                "AMARO", "AMBAR", "AMBAS", "AMBOS", "AMENO", "AMIGA", "AMIGO", "AMOR",
-                "ANCHO", "ANCLA", "ANDAR", "ANDEN", "ANEXO", "ANGEL", "ANILLO", "ANIMO",
-                "ANTES", "ANTRO", "ANUAL", "AÑADA", "AÑEJO", "AÑIL", "AÑORO", "AÑOS",
-                "AORTA", "APAÑO", "APEGO", "APODO", "APOYO", "APTO", "ARABE", "ARADO",
-                "ARAÑA", "ARAR", "ARBOL", "ARCE", "ARCO", "ARDER", "ARDID", "ARDOR",
-                "ARDUO", "AREA", "ARENA", "ARETE", "ARIDO", "ARIES", "ARMA", "ARMAR",
-                "ARNES", "AROMA", "ARPA", "ARPON", "ARREO", "ARROZ", "ASADO", "ASALTO",
-                "ASCO", "ASEAR", "ASEDIO", "ASILO", "ASIR", "ASNO", "ASPA", "ASTA",
-                "ASTRO", "ATADO", "ATAJO", "ATAUD", "ATEO", "ATICO", "ATLAS", "ATOMO",
-                "ATRAS", "ATRIO", "ATROZ", "ATUN", "AUDAZ", "AUDIO", "AUGE", "AULA",
-                "AUNAR", "AURA", "AUTOR", "AVAL", "AVARO", "AVENA", "AVION", "AVISO",
-                "AYER", "AYUDA", "AYUNO", "AZAR", "AZUL", "BABEL", "BACHE", "BAHIA",
-                "BAILE", "BAJAR", "BALA", "BALDE", "BALON", "BALSA", "BAMBU", "BANAL",
-                "BANCA", "BANCO", "BANDA", "BANDO", "BAÑAR", "BAÑO", "BARBA", "BARCA",
-                "BARCO", "BARDO", "BARON", "BARRA", "BARRO", "BASE", "BASTA", "BASTO",
-                "BATIR", "BAUL", "BAZAR", "BEBE", "BEBER", "BEIGE", "BELEN", "BELLO",
-                "BESAR", "BESO", "BICHO", "BIEN", "BINGO", "BLANCO", "BLUSA", "BOCA",
-                "BOCHO", "BODA", "BOINA", "BOLO", "BOLSA", "BOLSO", "BOMBA", "BOMBO",
-                "BONITO", "BONO", "BORDE", "BORLA", "BORRAR", "BOTAR", "BOTAS", "BOTE",
-                "BOTIN", "BOTON", "BOXEO", "BOYAR", "BOZAL", "BRAGA", "BRASA", "BRAVO",
-                "BRAZA", "BRAZO", "BREA", "BREVE", "BRISA", "BROCA", "BROMA", "BROTE",
-                "BRUJA", "BRUJO", "BRUMA", "BRUTO", "BUCAL", "BUCEO", "BUCHE", "BUCLE",
-                "BUENO", "BUFON", "BUHO", "BULLA", "BULTO", "BURLA", "BURRO", "BUSCAR",
-                "BUSTO", "BUZON", "BUZO", "CABER", "CABLE", "CABO", "CABRA", "CACAO",
-                "CACHO", "CACTUS", "CAER", "CAFE", "CAIDA", "CAJA", "CAJON", "CALA",
-                "CALAR", "CALDO", "CALLE", "CALLO", "CALMA", "CALOR", "CALVO", "CAMA",
-                "CAMBIO", "CAMPO", "CANAL", "CANAS", "CANOA", "CANTO", "CAÑA", "CAÑON",
-                "CAOBA", "CAOS", "CAPA", "CAPAZ", "CAPO", "CAPTAR", "CARA", "CARGO",
-                "CARNE", "CARPA", "CARRO", "CARTA", "CASA", "CASAR", "CASCO", "CASI",
-                "CASO", "CASTA", "CATAR", "CAUCE", "CAUSA", "CAUTO", "CAVAR", "CAZA",
-                "CAZAR", "CAZO", "CEBO", "CEBRA", "CEDER", "CEDRO", "CEGAR", "CEJA",
-                "CELDA", "CELO", "CELOSO", "CENA", "CENAR", "CENSO", "CEPA", "CERCA",
-                "CERCO", "CERDO", "CERO", "CESAR", "CHAL", "CHANCE", "CHANGO", "CHAPA",
-                "CHATO", "CHEF", "CHICO", "CHILE", "CHINO", "CHOZA", "CHOZO", "CHULO",
-                "CICLO", "CIDRA", "CIEGO", "CIELO", "CIEN", "CIENO", "CIFRA", "CIMA",
-                "CINCO", "CINE", "CINTA", "CIRCO", "CIRIO", "CISNE", "CITA", "CITAR",
-                "CLAN", "CLARA", "CLARO", "CLASE", "CLAVO", "CLIMA", "CLON", "CLORO",
-                "CLUB", "COBRA", "COBRE", "COCA", "COCER", "COCHE", "COCO", "CODO",
-                "COFRE", "COGER", "COITO", "COJIN", "COJO", "COLA", "COLAR", "COLMO",
-                "COLOR", "COMBA", "COMBO", "COMER", "COMODO", "CONDE", "CONGA", "CONO",
-                "COPA", "COPIA", "CORAL", "COREA", "CORO", "CORTE", "CORTO", "CORVO",
-                "COSA", "COSER", "COSTA", "COSTE", "COSTO", "CRANEO", "CREAR", "CRECER",
-                "CREDO", "CREER", "CREMA", "CRIA", "CRIAR", "CRIBA", "CRIN", "CROMO",
-                "CROTO", "CRUCE", "CRUDO", "CRUEL", "CRUZ", "CUAL", "CUARTO", "CUARZO",
-                "CUASI", "CUBO", "CUCA", "CUCO", "CUELLO", "CUENTO", "CUERO", "CUERPO",
-                "CUERVO", "CUEVA", "CUIDAR", "CULPA", "CULTO", "CUMBRE", "CUNA", "CURA",
-                "CURAR", "CURDO", "CURIA", "CURIO", "CURSO", "CURVA", "CURVO", "CUTIS",
-                "CUYO", "CUZCO", "DAMA", "DANZA", "DAÑAR", "DAÑO", "DARDO", "DATIL",
-                "DATO", "DEBER", "DEBIL", "DEBUT", "DECIR", "DEDAL", "DEDO", "DEJAR",
-                "DELTA", "DEMAS", "DEMORA", "DENSO", "DESDE", "DESEAR", "DESEO", "DEUDA",
-                "DIARIO", "DICHA", "DIETA", "DIEZ", "DIGNO", "DIODO", "DIOSA", "DIQUE",
-                "DISCO", "DIVAN", "DOBLE", "DOCIL", "DOGO", "DOLAR", "DOLER", "DOLOR",
-                "DOMAR", "DONAR", "DONDE", "DORAR", "DORSO", "DOSIS", "DOTAL", "DOTAR",
-                "DRAGA", "DRAMA", "DROGA", "DUCHA", "DUCHO", "DUDA", "DUDAR", "DUELO",
-                "DUEÑO", "DULCE", "DUO", "DUQUE", "DURAR", "DURO", "EBANO", "EBRIO",
-                "ECHAR", "ECO", "EDAD", "EDITAR", "EGO", "EJE", "ELOTE", "ELUDIR",
-                "EMITIR", "ENANO", "ENCIA", "ENERO", "ENOJO", "ENTERO", "ENTRE", "ENVIO",
-                "EPICO", "EPOCA", "ERIZO", "ERROR", "ESTAR", "ESTE", "ESTILO", "ETAPA",
-                "ETER", "ETICO", "ETNIA", "EURO", "EXITO", "EXTRA", "FACHA", "FACIL",
-                "FAENA", "FAJA", "FALDA", "FALSO", "FALTA", "FARDO", "FAROL", "FARRA",
-                "FASE", "FATAL", "FAUNA", "FAVOR", "FECHA", "FELIZ", "FELPA", "FEMUR",
-                "FEO", "FERIA", "FEROZ", "FIBRA", "FICHA", "FIEL", "FIGURA", "FIJAR",
-                "FILA", "FILME", "FILON", "FINCA", "FINGIR", "FINO", "FIRMA", "FLACO",
-                "FLAN", "FLOR", "FLOTA", "FLUIR", "FLUJO", "FLUOR", "FOBIA", "FOCA",
-                "FOCO", "FOLIO", "FONDO", "FORMA", "FORO", "FORRO", "FOSA", "FOSIL",
-                "FOTO", "FRASE", "FRENO", "FRESA", "FRIO", "FRITO", "FRUTA", "FUEGO",
-                "FUERA", "FUERO", "FUGAZ", "FUMAR", "FUNDA", "FURIA", "FUROR",
-                "FUSIL", "FUTBOL", "FUTURO", "GABAN", "GAFAS", "GAITA", "GALA", "GALAN",
-                "GALO", "GALON", "GAMA", "GAMBA", "GANAR", "GANAS", "GANGA",
-                "GANSO", "GARAJE", "GARRA", "GARZA", "GASES", "GASTO", "GATO",
-                "GEMIR", "GENIO", "GENTE", "GESTO", "GIRAR", "GIRO", "GLOBO",
-                "GLOSA", "GOLFO", "GOLPE", "GOMA", "GORDO", "GORILA", "GORRA", "GORRO",
-                "GOTA", "GOTEO", "GOZAR", "GOZO", "GRADO", "GRAJO", "GRANO", "GRAPA",
-                "GRASA", "GRASO", "GRATIS", "GRAVA", "GRAVE", "GRITO", "GRUMO", "GRUPO",
-                "GUAPA", "GUAPO", "GUSTO", "HABLA", "HACER", "HACHA", "HADA",
-                "HADO", "HALO", "HASTA", "HASTIO", "HATO", "HECHO", "HEDOR", "HELAR",
-                "HELIO", "HENO", "HEROE", "HIATO", "HIELO", "HIENA", "HIERRO",
-                "HIGOS", "HIJO", "HILAR", "HILO", "HIMNO", "HINCAR", "HIPO", "HOGAR",
-                "HOJA", "HOLA", "HONDA", "HONDO", "HONGO", "HONOR", "HONRA", "HORA",
-                "HORCA", "HORDA", "HORNO", "HOSCO", "HOTEL", "HOY", "HOYO",
-                "HOZ", "HUECO", "HUESO", "HUEVO", "HUIR", "HULE", "HUMANO",
-                "HUMEDO", "HUMO", "HUMOR", "HUNDIR", "HURON", "HURTO", "HUSO",
-                "IBERO", "ICONO", "IDEA", "IDEAL", "IDEAR", "IDEM", "IDILIO",
-                "IDOLO", "IGLU", "IGUAL", "IMAN", "IMPAR", "IMPURO", "INCA", "INDIO",
-                "INGLE", "IRA", "IRANI", "IRIS", "ISLA", "ISTMO",
-                "ITEM", "IZAR", "JABON", "JADE", "JALEO", "JAMAS", "JAMON",
-                "JAQUE", "JARRA", "JARRO", "JAULA", "JEFE", "JESUS", "JOVEN", "JOYA",
-                "JUDAS", "JUDIA", "JUDIO", "JUEGO", "JUEZ", "JUGAR", "JUGO", "JULIO",
-                "JUNCO", "JUNIO", "JUNTA", "JUNTO", "JURAR", "JUSTO", "KIWI", "KOALA",
-                "LABIO", "LADO", "LADRON", "LAGO", "LAICO", "LAMER", "LANZA", "LAPIZ",
-                "LAPSO", "LARGO", "LARVA", "LASER", "LATA", "LATEX", "LATIGO", "LATIN",
-                "LATIR", "LAUD", "LAVAR", "LAXO", "LAZO", "LEAL", "LECHO", "LEER",
-                "LEGAL", "LEGAR", "LEGUA", "LEJOS", "LEMA", "LENTO", "LEÑA", "LEON",
-                "LEONA", "LEPRA", "LERDO", "LETAL", "LETRA", "LEVE", "LIBRA", "LIBRE",
-                "LIBRO", "LICEO", "LICOR", "LIDER", "LIDIA", "LIGAR", "LIGERO", "LIJAR",
-                "LILA", "LIMA", "LIMBO", "LIMON", "LINCE", "LINDE", "LINDO", "LINEA",
-                "LINO", "LIO", "LIRA", "LIRIO", "LIRON", "LISO", "LISTA", "LITIO",
-                "LITRO", "LLAGA", "LLAMA", "LLANO", "LLANTO", "LLAVE", "LLEGAR", "LLENO",
-                "LLEVAR", "LLORAR", "LLUVIA", "LOBO", "LOCAL", "LOCO", "LOCURA", "LODO",
-                "LOGRO", "LOMA", "LOMO", "LONA", "LONJA", "LORO", "LOTE", "LOZA",
-                "LUCES", "LUCHA", "LUCIR", "LUEGO", "LUGAR", "LUJO", "LUNA", "LUNAR",
-                "LUNES", "LUPA", "LUTO", "LUZ", "MACRO", "MADRE", "MAGIA", "MAGMA",
-                "MAGNO", "MAGO", "MAIZ", "MAJO", "MALO", "MALLA", "MALTA",
-                "MAMBO", "MAMUT", "MANAR", "MANDO", "MANGA", "MANGO", "MANIA", "MANO",
-                "MANSO", "MANTA", "MAPA", "MARCA", "MARCO", "MAREA", "MARINO",
-                "MARZO", "MASA", "MATA", "MATAR", "MATE", "MATIZ", "MAULA",
-                "MAYO", "MAYOR", "MAZA", "MAZO", "MECHA", "MECER", "MEDIA", "MEDIO",
-                "MEDIR", "MEJOR", "MELON", "MELLA", "MENOR", "MENOS", "MENTA", "MENTE",
-                "MENTIR", "MENU", "MERCED", "MES", "MESA", "MESON", "META",
-                "METAL", "METER", "METRO", "MICRA", "MICRO", "MIEDO", "MIEL", "MIGA",
-                "MIL", "MILLA", "MIMAR", "MIMO", "MINA", "MINAR",
-                "MIO", "MIOPE", "MIRA", "MIRAR", "MIRLO", "MIRRA", "MISA", "MISIL",
-                "MISMO", "MITAD", "MITIN", "MITO", "MITRA", "MIXTO", "MOCHO", "MODA",
-                "MODAL", "MODEM", "MODO", "MOHO", "MOJAR", "MOLDE", "MOLER", "MOMIA",
-                "MONJA", "MONJE", "MONO", "MONTA", "MONTE", "MONTO", "MORAL", "MORAR",
-                "MORBO", "MORIR", "MORRO", "MORSA", "MOSCA", "MOSTO", "MOTEL", "MOTIN",
-                "MOTOR", "MOVER", "MOVIL", "MOZA", "MOZO", "MUCHO", "MUDAR", "MUDO",
-                "MUECA", "MUELA", "MUERTE", "MUESCA", "MUGIR", "MUJER", "MULA",
-                "MULO", "MULTA", "MUNDO", "MURAL", "MURO", "MUSA", "MUSEO", "MUSGO",
-                "MUSLO", "MUTIS", "MUTUO", "NACAR", "NACER", "NACHO", "NADA",
-                "NADAR", "NADIE", "NAIPE", "NALGA", "NARCO", "NARIZ", "NATA", "NATAL",
-                "NATO", "NAUTA", "NAVAL", "NAVE", "NECIO", "NEGAR", "NEGRO", "NENA",
-                "NENE", "NERVIO", "NETO", "NEVAR", "NEXO", "NICHO", "NIETO", "NIEVE",
-                "NIÑO", "NIVEL", "NOBLE", "NOCHE", "NODO", "NOGAL", "NONO",
-                "NORIA", "NORMA", "NORTE", "NOTA", "NOTAR", "NOVATO", "NOVEL", "NOVIA",
-                "NOVIO", "NUBE", "NUCA", "NUDO", "NUEVE", "NUEZ", "NULO",
-                "NUNCA", "ÑANDU", "ÑATO", "ÑOÑO", "OASIS", "OBESO", "OBICE", "OBITO",
-                "OBOE", "OBRA", "OBRAR", "OBVIO", "OCA", "OCASO", "OCIO",
-                "OCRE", "OCULTO", "ODIO", "ODRE", "OESTE", "OIDO", "OIR",
-                "OJO", "OLA", "OLEO", "OLER", "OLIVA", "OLIVO", "OLLA",
-                "OLMO", "OLOR", "OMITIR", "ONCE", "ONDA", "ONZA", "OPACO", "OPALO",
-                "OPCION", "OPERA", "OPIO", "OPTAR", "ORAR", "ORATE", "ORBE",
-                "ORCA", "ORDEN", "OREJA", "ORFEO", "ORGIA", "ORINA", "ORLA", "ORO",
-                "ORZA", "OSADO", "OSAR", "OSCAR", "OSCURO", "OSO", "OSTRA",
-                "OTOÑO", "OTRA", "OTRO", "OVAL", "OVEJA", "OVNI", "OVULO",
-                "OXIDO", "OZONO", "PACTO", "PADRE", "PAGA", "PAGAR", "PAGO", "PAIS",
-                "PAJA", "PALA", "PALCO", "PALIDO", "PALMA", "PALMO", "PALO",
-                "PAN", "PANDA", "PANEL", "PANICO", "PANZA", "PAPA", "PAPEL",
-                "PAR", "PARA", "PARAR", "PARCA", "PARCO", "PARDO", "PARED",
-                "PARIA", "PARIR", "PARO", "PARRA", "PARTE", "PARTO", "PASA", "PASAR",
-                "PASEO", "PASIVO", "PASO", "PASTA", "PASTO", "PATA", "PATAN",
-                "PATIN", "PATIO", "PATO", "PAUSA", "PAUTA", "PAVO", "PAVOR", "PAZ",
-                "PEAJE", "PECADO", "PECAR", "PECAS", "PECES", "PECHO", "PEDAL", "PEDIR",
-                "PEGAR", "PEINA", "PEINE", "PELAR", "PELEA", "PELO", "PELON",
-                "PENA", "PENAL", "PENAR", "PENCA", "PEÑA", "PEÑON", "PEON",
-                "PEOR", "PERA", "PERCA", "PERDER", "PERDON", "PERFIL", "PERLA",
-                "PERNO", "PERO", "PERRO", "PERSA", "PESA", "PESAR", "PESCA",
-                "PESIMO", "PESO", "PESTE", "PEZ", "PEZON", "PIANO", "PIARA",
-                "PICAR", "PICO", "PIE", "PIEDAD", "PIEL", "PIENSO", "PIEZA", "PILA",
-                "PILAR", "PILON", "PINAR", "PINO", "PINTA", "PINTOR", "PINZA", "PIÑA",
-                "PIOJO", "PIPA", "PIQUE", "PISAR", "PISO", "PISTA", "PITON",
-                "PIVOTE", "PIZCA", "PIZZA", "PLACA", "PLAGA", "PLAN", "PLANO",
-                "PLATA", "PLATO", "PLAYA", "PLAZA", "PLAZO", "PLEBE", "PLENO",
-                "PLOMO", "PLUMA", "POBRE", "POCO", "PODA", "PODAR", "PODER",
-                "PODIO", "POEMA", "POETA", "POLAR", "POLEN", "POLIO", "POLLO",
-                "POLO", "POLVO", "POMPA", "PONER", "POR", "PORCHE", "PORO",
-                "PORRA", "POSE", "POSIBLE", "POSTA", "POSTE", "POTRO", "POZO", "PRADO",
-                "PRECIO", "PREDIO", "PREMIO", "PRENDA", "PRENSA", "PRESA", "PRESO",
-                "PRESTO", "PREVER", "PREVIO", "PRIMO", "PRISA", "PRO", "PROA",
-                "PROBAR", "PROBO", "PROEZA", "PROLE", "PRONTO", "PROPIO", "PROSA",
-                "PUDOR", "PUEBLO", "PUERTA", "PUERTO", "PUES", "PUESTO", "PUGNA",
-                "PUJAR", "PULCRO", "PULGA", "PULIR", "PULPA", "PULPO",
-                "PULSO", "PUMA", "PUNA", "PUÑAL", "PUÑO", "PUPA",
-                "PURO", "QUARK", "QUE", "QUÉ", "QUEDAR",
-                "QUEJA", "QUEMAR", "QUERER", "QUESO", "QUIEN", "QUIEN", "QUIETO",
-                "QUINCE", "QUINTA", "QUINTO", "QUISTE", "QUITAR", "QUIZA",
-                "RABIA", "RABO", "RADAR", "RADIO", "RAER",
-                "RAIDO", "RAIZ", "RAJA", "RALEA", "RAMA", "RAMAL",
-                "RAMO", "RAMPA", "RANA", "RANCHO", "RANGO", "RAÑO",
-                "RAPAZ", "RAPEL", "RAPIDO", "RAPTO", "RARO", "RASGO", "RASO",
-                "RASPA", "RATA", "RATON", "RAUDO", "RAYA", "RAYAR", "RAYO",
-                "RAYON", "RAZA", "RAZON", "REAL", "RECELO",
-                "RECIO", "RECTA", "RECTO", "RED", "REGAR", "REGALO", "REGIO", "REGIR",
-                "REGLA", "REHEN", "REINA", "REINO", "REIR", "REJA",
-                "RELAJO", "RELOJ", "REMAR", "REMERO", "REMO",
-                "RENDIR", "RENGLON", "RENO", "RENTA", "REÑIR", "REO",
-                "RETO", "REUMA", "REVES", "REY", "REZAR", "REZO", "RIA", "RICO",
-                "RIEL", "RIENDA", "RIESGO", "RIFA", "RIFLE", "RIGOR", "RIMA",
-                "RIMEL", "RINCON", "RIÑA", "RIÑON", "RIO", "RISA", "RISCO",
-                "RITMO", "RITO", "RIZAR", "RIZO", "ROBAR", "ROBLE", "ROBOT",
-                "ROCA", "ROCE", "ROCIAR", "ROCIO", "RODEAR", "RODEO",
-                "ROER", "ROGAR", "ROJO", "ROLLO", "ROMA",
-                "ROMBO", "ROMPER", "RON", "RONCAR", "RONCO", "RONDA",
-                "ROPA", "ROSA", "ROSCA", "ROSTRO", "ROTO", "ROZAR", "RUBI",
-                "RUBIO", "RUBOR", "RUCIO", "RUDA", "RUDO", "RUEDA", "RUEDO",
-                "RUEGO", "RUGBY", "RUGIR", "RUIDO", "RUINA", "RUIN",
-                "RULO", "RUMBO", "RUMOR", "RURAL",
-                "RUSO", "RUTA", "SABER", "SABIO", "SABLE",
-                "SABOR", "SACAR", "SACO", "SACRO", "SAETA", "SAGAZ", "SAGA",
-                "SAL", "SALA", "SALAR",
-                "SALDO", "SALERO", "SALIR", "SALMO",
-                "SALON", "SALSA", "SALTO", "SALUD", "SALVA",
-                "SALVE", "SANO", "SANTA",
-                "SANTO", "SAPO", "SAQUE", "SARNA", "SARRO",
-                "SARZA", "SAUCE", "SAUNA", "SAXO",
-                "SAZON", "SEBO", "SECAR", "SECO", "SECTA", "SECTOR", "SECUAZ",
-                "SED", "SEDA", "SEDAN", "SEDAR", "SEDE",
-                "SEGUN", "SEGURO", "SEIS", "SELLO", "SELVA",
-                "SEMEN", "SENDA", "SENIL", "SENO", "SEÑAL", "SEÑOR",
-                "SEPIA", "SEQUIA", "SER", "SERENO", "SERIE", "SERIO",
-                "SERVIR", "SESGO", "SESION", "SETA", "SEVERO", "SEXO",
-                "SEXTO", "SI", "SIDRA", "SIEN", "SIERRA", "SIERVO",
-                "SIESTA", "SIETE", "SIGLA", "SIGLO", "SIGMA", "SIGNO",
-                "SILA", "SILEX", "SILLA", "SILO",
-                "SIMA", "SIMIL", "SIMIO", "SIMPLE",
-                "SIRENA", "SISA", "SISMO", "SITIO",
-                "SITUAR", "SOBAR", "SOBON",
-                "SOBRA", "SOBRE", "SOBRIO", "SOCIAL", "SOCIO", "SODA", "SOEZ",
-                "SOFA", "SOGA", "SOL", "SOLAR", "SOLAZ",
-                "SOLDAR", "SOLER", "SOLFA", "SOLIDO",
-                "SOLIO", "SOLO", "SOLTAR",
-                "SOMBRA", "SONAR", "SONDA",
-                "SONIDO", "SONORO", "SOÑAR", "SOPA",
-                "SOPLAR", "SOPLO", "SOPLON", "SOPOR",
-                "SORBO", "SORDA", "SORDO", "SORNA",
-                "SORTEO", "SOSO", "SOTANA", "SOTANO", "SOTO",
-                "SUAVE", "SUBIR", "SUBITO", "SUCIO", "SUDAR", "SUDOR", "SUECO",
-                "SUELA", "SUELDO", "SUELO", "SUEÑO", "SUERO", "SUERTE",
-                "SUFIJO", "SUFRIR", "SUITE", "SUIZA", "SUIZO", "SUJETO",
-                "SULTAN", "SUMA", "SUMAR", "SUMO",
-                "SUPER", "SUREÑO", "SURF", "SURGIR", "SUSHI", "SUSTO", "SUTIL",
-                "SUYO", "TABLA", "TABU",
-                "TACON", "TACTO", "TAJO", "TAL",
-                "TALAR", "TALCO", "TALLA", "TALLO", "TALON",
-                "TANDA", "TANGA", "TANGO", "TANQUE", "TANTO", "TAPA",
-                "TAPAR", "TAPIA", "TAPIZ", "TAPON", "TARDE", "TAREA",
-                "TAROT", "TARRO", "TARTA", "TASA", "TASCA",
-                "TAURO", "TAXI", "TAZA", "TAZON", "TE", "TEATRO", "TECHO", "TECLA",
-                "TEDIO", "TEJA", "TEJAR", "TEJER", "TEJON", "TELA", "TELAR",
-                "TELE", "TELON", "TEMA", "TEMER", "TEMOR", "TENAZ", "TENDER",
-                "TENER", "TENIA", "TENIS", "TENOR", "TENSO", "TEÑIR",
-                "TERCER", "TERCO", "TERMO", "TERNA", "TERNO",
-                "TESIS", "TESON", "TESORO", "TEST",
-                "TETA", "TETRA", "TEXTO", "TEZ", "TIA", "TIARA", "TIBIA", "TIBIO",
-                "TIEMPO", "TIENDA", "TIERNO", "TIGRE",
-                "TILDE", "TIMAR", "TIMBRE", "TIMIDO", "TIMO", "TIMON", "TIMOR",
-                "TINA", "TINTA", "TINTE", "TINTO", "TIÑA", "TIO",
-                "TIPO", "TIRA", "TIRAR", "TIRO", "TIRON", "TISIS",
-                "TITER", "TIZA", "TIZNE", "TOALLA", "TOBA",
-                "TOCAR", "TOCAYO", "TOCINO", "TODO", "TOGA", "TOLDO", "TOMAR",
-                "TONEL", "TONO", "TONTA", "TONTO", "TOPAR", "TOPE", "TOPO",
-                "TOQUE", "TORAX", "TORCAZ", "TORCER", "TORERO", "TORIL",
-                "TORNAR", "TORNEO", "TORNO", "TORO", "TORPE", "TORRE", "TORSO",
-                "TORTA", "TORVO", "TOS", "TOSCO", "TOSER", "TOTAL", "TOTEM",
-                "TOXICO", "TRABA", "TRABAR",
-                "TRAER", "TRAGAR", "TRAGO",
-                "TRAJE", "TRAMA", "TRAMO", "TRANCA", "TRANCE",
-                "TRAPA", "TRAPO", "TRATO", "TRAUMA", "TRAZA", "TRAZAR", "TREBOL",
-                "TREGUA", "TREN", "TREPAR", "TRES", "TRIBU",
-                "TRIGO", "TRINAR", "TRINEO", "TRIPA", "TRIPLE",
-                "TRISTE", "TRIZA", "TROFEO", "TRONA",
-                "TRONAR", "TRONCO", "TRONO", "TROPA",
-                "TROTE", "TROVA", "TROZO", "TRUCHA", "TRUCO", "TRUENO", "TRUFA",
-                "TUBO", "TUIT", "TUMBA", "TUMBAR", "TUMBO", "TUMOR", "TUNA",
-                "TUNDA", "TUNEL", "TUPIDO", "TURBA", "TURBAR", "TURBIO", "TURCO",
-                "TURNO", "TUTOR", "TUYO", "UBRE", "UFANO",
-                "UJIER", "ULTIMO", "ULTRA",
-                "UNICO", "UNIDO", "UNION", "UNIR", "UNO", "UNTAR", "UÑA",
-                "URANO", "URBANO", "URBE", "URDIR", "URGIR", "URNA",
-                "USADO", "USAR", "USINA", "USO",
-                "USUAL", "USURA", "UTERO", "UTIL",
-                "UVA", "VACA", "VACAR", "VACIO", "VACUNO",
-                "VADO", "VAGAR", "VAGO", "VAGON", "VAHO", "VAINA", "VALER",
-                "VALLA", "VALLE", "VALOR", "VALS", "VALVA", "VANO", "VAPOR",
-                "VARA", "VARAR", "VARIO", "VARON", "VASCO",
-                "VASO", "VASTO", "VATE", "VEGA", "VEINTE", "VEJAR", "VEJEZ",
-                "VELA", "VELAR", "VELO", "VELOZ", "VENA", "VENAL",
-                "VENCER", "VENDA", "VENDER", "VENENO", "VENIA", "VENIR", "VENTA",
-                "VENUS", "VER", "VERANO", "VERAZ", "VERBAL", "VERBO", "VERDE",
-                "VERGA", "VERJA", "VERSO", "VERTER",
-                "VESTE", "VESTIR", "VETA", "VETAR",
-                "VETO", "VEZ", "VIA", "VIAJE", "VIBORA", "VIBRAR", "VICIO", "VID",
-                "VIDA", "VIDEO", "VIDRIO", "VIEJO", "VIENTO",
-                "VIGA", "VIGIA", "VIGOR", "VIL", "VILLA",
-                "VINO", "VIÑA", "VIOLA",
-                "VIRAL", "VIRAR", "VIRGO", "VIRIL",
-                "VIRUS", "VISA", "VISIR", "VISO", "VISON",
-                "VISTA", "VISTO", "VITAL", "VITOR", "VIUDA", "VIUDO", "VIVAC",
-                "VIVAZ", "VIVIR", "VIVO", "VOCAL", "VOILA", "VOLAR",
-                "VOLCAR", "VOLTIO", "VORAZ", "VOTAR", "VOTO", "VOZ", "VUELCO", "VUELO",
-                "VULGO", "VULVA", "WATER", "WHISKY", "WIFI",
-                "YACER", "YATE", "YAYO", "YEGUA", "YELMO", "YEMA",
-                "YEN", "YERBA", "YERMO", "YERNO", "YERO", "YESCA", "YESO", "YETI",
-                "YIN", "YODO", "YOGA", "YOGUR", "YOYO", "YUCA", "YUGO", "YUNTA",
-                "ZAFIO", "ZAFIR", "ZAFRA", "ZAGA", "ZAGAL",
-                "ZAINO", "ZANCA", "ZANCO", "ZANJA", "ZAPA", "ZAPAR", "ZAR", "ZARPA",
-                "ZARPAR", "ZARZA", "ZEN", "ZINC",
-                "ZOMBI", "ZONA", "ZONZO",
-                "ZORRA", "ZORRO", "ZOTE", "ZUECO", "ZUMO", "ZURDO"
-            ];
+document.addEventListener('DOMContentLoaded', () => {
 
-            const validWords = new Set(wordList);
-            const words = Array.from(validWords); // Para elegir palabras secretas
+    // 1. LISTA CURADA DE RESPUESTAS (Palabras a adivinar)
+    const listaDeRespuestas = [
+        "ABEJA", "ACTOR", "ADIOS", "AGUAS", "AGUDO", "AHORA", "ALBUM", "ALTAR", "AMIGO", 
+        "AMOR", "ANCHO", "ANGEL", "ANIMO", "ANTES", "ARBOL", "ARENA", "ARROZ", "AUDIO", 
+        "AVION", "AZUL", "BAILE", "BAJAR", "BALON", "BANCO", "BANDA", "BARBA", "BARCO", 
+        "BARRA", "BARRO", "BEBER", "BELLO", "BICHO", "BLUSA", "BOCAL", "BODAS", "BOLSA", 
+        "BOLSO", "BOMBA", "BRAVO", "BRAZO", "BRILL", "BRISA", "BROMA", "BRUJA", "BUENO", 
+        "BURRO", "BUSCA", "CABRA", "CAIDA", "CAJON", "CALLE", "CALMA", "CALOR", "CAMPO", 
+        "CANAL", "CANTA", "CANTO", "CAÑON", "CARNE", "CARPA", "CARRO", "CARTA", "CASAR", 
+        "CASAS", "CASCO", "CEBRA", "CENAR", "CERCA", "CERDO", "CICLO", "CIELO", "CINTA", 
+        "CIRCO", "CLARA", "CLARO", "CLASE", "CLAVO", "CLIMA", "COCHE", "COLOR", "COMER", 
+        "CORAL", "CORRE", "CORTO", "COSTA", "CREMA", "CRUCE", "CUERO", "CUEVA", "CURSO", 
+        "CURVA", "DANZA", "DEBIL", "DECIR", "DEDAL", "DELTA", "DESEO", "DIETA", "DIGNO", 
+        "DISCO", "DOBLE", "DOLOR", "DONDE", "DULCE", "DUCHA", "DUEÑO", "DURAR", "ENANO", 
+        "ENERO", "ENOJO", "ENTRA", "ENVIO", "ERROR", "ETAPA", "EXITO", "EXTRA", "FALDA", 
+        "FALSO", "FAROL", "FATAL", "FELIZ", "FIBRA", "FICHA", "FIERA", "FINAL", "FINCA", 
+        "FIRMA", "FLACO", "FLAMA", "FLOTA", "FONDO", "FORMA", "FOTOS", "FRASE", "FRENO", 
+        "FRESA", "FRITO", "FRUTA", "FUEGO", "FUERA", "GAFAS", "GALLO", "GANAR", "GENTE", 
+        "GENIO", "GIRAR", "GLOBO", "GOLPE", "GORDO", "GORRA", "GOTAS", "GRADO", "GRANO", 
+        "GRASA", "GRAVE", "GRITO", "GRUPO", "GUAPA", "GUAPO", "HABLA", "HACER", "HACHA", 
+        "HARTO", "HELIO", "HIELO", "HOGAR", "HOJAS", "HONDO", "HONGO", "HORAS", "HORNO", 
+        "HOTEL", "HUECO", "HUESO", "HUEVO", "HUMOR", "IDEAL", "IDEAS", "IGUAL", "IMPAR", 
+        "ISLAS", "JABON", "JAMON", "JAULA", "JEQUE", "JOVEN", "JUEGO", "JUGAR", "JULIO", 
+        "JUNIO", "JUNTA", "JUNTO", "LABIO", "LADOS", "LAGOS", "LANZA", "LAPIZ", "LARGO", 
+        "LARVA", "LATAS", "LATIR", "LAVAR", "LECHE", "LECHO", "LECHU", "LEJOS", "LENTO", 
+        "LEONA", "LETRA", "LIBRA", "LIBRE", "LIBRO", "LICOR", "LIDER", "LIMON", "LINDA", 
+        "LINDO", "LINEA", "LISTA", "LISTO", "LLAMA", "LLANO", "LLAVE", "LLEGA", "LLENO", 
+        "LLEVA", "LLORA", "LOCAL", "LOGRO", "LUCHA", "LUCES", "LUEGO", "LUGAR", "LUNAR", 
+        "LUNES", "MADRE", "MAGIA", "MAGMA", "MALO", "MAMUT", "MANGA", "MANGO", "MANIA", 
+        "MANOS", "MANSO", "MANTA", "MAPAS", "MARCA", "MARCO", "MAREA", "MARTE", "MAYOR", 
+        "MEDIA", "MEDIO", "MEJOR", "MELON", "MENOS", "MENTA", "MENTE", "METAL", "METER", 
+        "METRO", "MIEDO", "MIEL", "MIMOS", "MINAS", "MIRAR", "MITAD", "MODAL", "MODOS", 
+        "MOJAR", "MOLDE", "MOMIA", "MONJA", "MONJE", "MONOS", "MONTE", "MORAL", "MORIR", 
+        "MOSCA", "MOTOR", "MOVER", "MOVIL", "MUCHO", "MUDOS", "MUECA", "MUELA", "MUJER", 
+        "MUNDO", "MURAL", "MUROS", "NACER", "NADAR", "NADIE", "NAIPE", "NALGA", "NARIZ", 
+        "NATAL", "NAVAL", "NAVES", "NEGRO", "NEVAR", "NICHO", "NIDOS", "NIEVE", "NIÑEZ", 
+        "NIÑOS", "NIVEL", "NOBLE", "NOCHE", "NODOS", "NORMA", "NORTE", "NOTAS", "NUBES", 
+        "NUEVA", "NUEVE", "NUEVO", "NUNCA", "OBRAS", "OBESO", "OESTE", "OIDOS", "OVEJA", 
+        "OXIDO", "PADRE", "PAGAR", "PALCO", "PALMA", "PALTA", "PANAL", "PANDA", "PANES", 
+        "PAPEL", "PARAR", "PARDO", "PARED", "PARES", "PARIR", "PARTO", "PASAR", "PASEO", 
+        "PASOS", "PASTA", "PASTO", "PATAS", "PATIO", "PAUSA", "PAVOS", "PECES", "PECHO", 
+        "PEDAL", "PEDIR", "PEGAR", "PELEA", "PELOS", "PENAL", "PERAL", "PERAS", "PERLA", 
+        "PERRO", "PESAR", "PESCA", "PESOS", "PESTE", "PIANO", "PICAR", "PIEZA", "PILAR", 
+        "PILAS", "PINOS", "PINTA", "PINZA", "PIOJO", "PIPAS", "PISAR", "PISOS", "PISTA", 
+        "PIZZA", "PLACA", "PLAGA", "PLANO", "PLATA", "PLATO", "PLAYA", "PLAZA", "PLOMO", 
+        "PLUMA", "POBRE", "POCOS", "PODAR", "PODER", "POEMA", "POETA", "POLLO", "POLVO", 
+        "POMPA", "PONER", "POROS", "POSTE", "POTRO", "POZOS", "PRADO", "PRESA", "PRESO", 
+        "PRIMO", "PROSA", "PUDOR", "PULGA", "PULIR", "PULSO", "PUNTA", "PUNTO", "PUÑAL", 
+        "PUÑOS", "QUESO", "QUIEN", "RABIA", "RADIO", "RAMAS", "RANGO", "RAPAZ", "RATON", 
+        "RAYAS", "RAYOS", "RAZAS", "RAZON", "REINA", "REINO", "REJAS", "RELOJ", "REMOS", 
+        "RENAL", "RENTA", "RESTO", "RETAR", "REYES", "REZAR", "RICOS", "RIFLE", "RIGOR", 
+        "RIVAL", "ROBAR", "ROBLE", "ROBOT", "ROCAS", "ROCIO", "RODEO", "ROGAR", "ROJAS", 
+        "ROLLO", "ROMBO", "RONDA", "ROPAS", "ROSAS", "ROSCA", "ROSTRO", "ROTOS", "ROZAR", 
+        "RUBIA", "RUBIO", "RUIDO", "RUINA", "RUMBO", "RURAL", "SABER", "SABIO", "SACAR", 
+        "SALAR", "SALDO", "SALIR", "SALSA", "SALTO", "SALUD", "SALVA", "SANAR", "SANOS", 
+        "SANTO", "SAPOS", "SARNA", "SECAR", "SECOS", "SEDAN", "SELLO", "SELVA", "SEÑAL", 
+        "SEÑOR", "SERES", "SERIA", "SERIO", "SESOS", "SETAS", "SEXTO", "SIETE", "SIGLO", 
+        "SIGNO", "SILLA", "SIMIO", "SITIO", "SOBRA", "SOBRE", "SOCIO", "SOLAR", "SOLOS", 
+        "SOMOS", "SONAR", "SONDA", "SOÑAR", "SOPAS", "SOPOR", "SORDO", "SUAVE", "SUBIR", 
+        "SUCIO", "SUDAR", "SUECO", "SUELO", "SUEÑO", "SUERO", "SUMAR", "SUPER", "SURCO", 
+        "SUSTO", "SUTIL", "TABLA", "TACTO", "TALAR", "TALCO", "TALON", "TANDA", "TANGA", 
+        "TAPAR", "TAPAS", "TAPIA", "TARDE", "TAREA", "TARTA", "TAROT", "TASAS", "TAXIS", 
+        "TECHO", "TECLA", "TEJAR", "TEJER", "TELAR", "TELON", "TEMAS", "TEMER", "TEMOR", 
+        "TENAZ", "TENER", "TENIS", "TENSO", "TERCO", "TERMO", "TESIS", "TEXTO", "TIBIA", 
+        "TIBIO", "TIGRE", "TILDE", "TIMON", "TINTA", "TINTE", "TIPOS", "TIRAR", "TITAN", 
+        "TIZNA", "TOCAR", "TODOS", "TOMAR", "TONTO", "TOPOS", "TOQUE", "TORPE", "TORRE", 
+        "TORTA", "TOSER", "TOTAL", "TRAGO", "TRAJE", "TRAMO", "TRATO", "TRAZA", "TRIBU", 
+        "TRIGO", "TRIPA", "TRONO", "TROPA", "TROTE", "TROZO", "TRUCO", "TUMBA", "TUNEL", 
+        "TURBA", "TURCO", "TURNO", "TUTOR", "UNICA", "UNICO", "UNION", "UNTAR", "USADO", 
+        "VALER", "VALLE", "VALOR", "VALVA", "VAPOR", "VARON", "VASOS", "VELAS", "VELOZ", 
+        "VENAS", "VENIR", "VENTA", "VERBO", "VERDE", "VERSO", "VIAJE", "VIBRA", "VIDEO", 
+        "VIEJO", "VIGOR", "VINOS", "VIOLA", "VIRAL", "VIRUS", "VISOR", "VISTA", "VITAL", 
+        "VIVIR", "VOLAR", "VOTAR", "VOTOS", "VUELO", "YATES", "YEGUA", "YENDO", "YERNO", 
+        "YESOS", "YOGUR", "ZAFAR", "ZANJA", "ZONAS", "ZORRO", "ZUECO", "ZUMBA", "ZURDO"
+    ];
 
-            const board = document.getElementById('board');
-            const keyboard = document.getElementById('keyboard');
-            const modal = document.getElementById('records-modal');
-            const modalTitle = document.getElementById('modal-title');
-            const modalWord = document.getElementById('modal-word');
-            const bestTimeEl = document.getElementById('best-time');
-            const bestAttemptsEl = document.getElementById('best-attempts');
-            const playAgainButton = document.getElementById('play-again-button');
-            const toast = document.getElementById('toast');
-            
-            const ROWS = 6;
-            const COLS = 5;
+    // 2. DICCIONARIO EXTENSO PARA VALIDACIÓN (Incluye plurales, verbos, etc.)
+    const diccionarioValido = new Set([
+        ...listaDeRespuestas, // Incluye todas las respuestas posibles
+        "ABAJO", "ABANO", "ABATE", "ABEJA", "ABETO", "ABISO", "ABONO", "ABRIL", "ABRIR",
+        "ACASO", "ACATO", "ACCED", "ACERA", "ACERO", "ACIBO", "ACODO", "ACOGE", "ACOSO",
+        "ACTOR", "ACTOS", "ACUDO", "ACUNA", "ACUSO", "ACUTO", "ADEMA", "ADIOS", "ADOBO",
+        "ADORO", "ADUCE", "ADUJE", "ADURO", "AEREA", "AEREO", "AFEAN", "AFEAR", "AFILA",
+        "AFILO", "AFINO", "AFORO", "AFUAN", "AGACE", "AGAPE", "AGAVE", "AGITO", "AGOTO",
+        "AGRAS", "AGRIA", "AGRIO", "AGUAI", "AGUAN", "AGUAR", "AGUAS", "AGUAY", "AGUCE",
+        "AGUDA", "AGUDO", "AGUJA", "AHITA", "AHITO", "AHOGO", "AHORA", "AINCO", "AIRAR",
+        "AIREAD", "AIREO", "AISLA", "AISLO", "AJABA", "AJADO", "AJENA", "AJENO", "AJERO",
+        "AJETE", "AJUAR", "ALABA", "ALADO", "ALAMO", "ALBAR", "ALBAS", "ALBUM", "ALBUR",
+        "ALDEA", "ALEGA", "ALEGO", "ALEJE", "ALEJO", "ALELI", "ALERO", "ALETA", "ALFAR",
+        "ALFIL", "ALFOZ", "ALGAR", "ALGAS", "ALIAS", "ALIAR", "ALIGA", "ALIJA", "ALIJO",
+        "ALISO", "ALIÑO", "ALIÑE", "ALMEA", "ALMEZ", "ALMUD", "ALPES", "ALTAR", "ALTEA",
+        "ALUDA", "ALUDE", "ALUDO", "ALUNA", "ALZAN", "ALZAR", "AMABA", "AMADA", "AMADO",
+        "AMAGA", "AMAGO", "AMAME", "AMARA", "AMARE", "AMARO", "AMASA", "AMASO", "AMATE",
+        "AMBOS", "AMEBA", "AMELO", "AMENA", "AMENO", "AMIGA", "AMIGO", "AMIRI", "AMITO",
+        "AMOLE", "AMOMO", "AMOR", "AMPON", "AMURA", "AMURO", "ANADE", "ANCHO", "ANCLA",
+        "ANCLO", "ANDAN", "ANDAR", "ANDAS", "ANDEN", "ANDES", "ANDON", "ANEAR", "ANEAS",
+        "ANEGA", "ANEJO", "ANEXA", "ANEXO", "ANGEL", "ANGLA", "ANGLO", "ANGOR", "ANIDA",
+        "ANIDO", "ANIMA", "ANIMO", "ANIÑA", "ANIÑO", "ANISA", "ANISO", "ANOTA", "ANOTO",
+        "ANSIA", "ANSAS", "ANTES", "ANTIA", "ANTRO", "ANUAL", "ANUDA", "ANUDO", "ANULA",
+        "ANULO", "AORTA", "APAGA", "APAGO", "APANA", "APANO", "APARA", "APARO", "APEAN",
+        "APEAR", "APEGA", "APEGO", "APELA", "APELO", "APENA", "APENO", "APERO", "APICE",
+        "APILA", "APILO", "APNEA", "APOCA", "APOCO", "APODA", "APODO", "APOLO", "APONE",
+        "APORO", "APOSA", "APOSO", "APOYA", "APOYO", "APTA", "APTO", "APUNA", "APUNO",
+        "APURA", "APURO", "AQUEL", "AQUEO", "ARABE", "ARADA", "ARADO", "ARANA", "ARARA",
+        "ARARE", "ARBOL", "ARCAS", "ARCEA", "ARCEN", "ARCHA", "ARCIL", "ARCON", "ARDER",
+        "ARDID", "ARDOR", "ARDUA", "ARDUO", "ARENA", "ARETE", "ARFIL", "ARGEL", "ARGOT",
+        "ARGUE", "ARIAS", "ARICA", "ARIDA", "ARIDO", "ARIES", "ARIJA", "ARILO", "ARISCA",
+        "ARISCO", "ARIZA", "ARLAR", "ARMAD", "ARMAN", "ARMAR", "ARMAS", "ARMEN", "ARMES",
+        "ARMON", "ARNES", "AROMO", "ARONA", "ARPAR", "ARPON", "ARRAS", "ARREA", "ARREO",
+        "ARRIA", "ARROZ", "ARTAL", "ARTOS", "ASABA", "ASADA", "ASADO", "ASAR", "ASASE",
+        "ASAZ", "ASCIO", "ASCUA", "ASEAN", "ASEAR", "ASEAS", "ASEDA", "ASELA", "ASELE",
+        "ASENSO", "ASEOS", "ASESAR", "ASESOR", "ASGAN", "ASGAS", "ASICA", "ASIDO", "ASILA",
+        "ASILO", "ASINA", "ASIRA", "ASIRE", "ASIST", "ASNAL", "ASOCIA", "ASOLE", "ASOMA",
+        "ASOMO", "ASPAR", "ASPAS", "ASPEO", "ASPIC", "ASPRO", "ASTIL", "ASTRO", "ASTUR",
+        "ASUME", "ASUMO", "ASUSO", "ATABA", "ATACA", "ATACO", "ATADA", "ATADO", "ATAJA",
+        "ATAJO", "ATAÑE", "ATAUD", "ATEAR", "ATEAS", "ATEOS", "ATESA", "ATESO", "ATEZA",
+        "ATEZO", "ATIBO", "ATILA", "ATINA", "ATINO", "ATLAS", "ATOAR", "ATOJO", "ATOLE",
+        "ATOMO", "ATONA", "ATONO", "ATORA", "ATORO", "ATRAS", "ATRIO", "ATROZ", "ATUSA",
+        "ATUSO", "AUDIO", "AUGUR", "AULLA", "AULLO", "AUNAN", "AUNAR", "AUNAS", "AUPAR",
+        "AURAS", "AUREA", "AUREO", "AUTOR", "AVALA", "AVALO", "AVARA", "AVARO", "AVENI",
+        "AVERO", "AVEZA", "AVEZO", "AVIAR", "AVIDA", "AVIDO", "AVION", "AVISA", "AVISO",
+        "AVIVA", "AVIVO", "AXILA", "AYATE", "AYUDA", "AYUDO", "AYUNA", "AYUNO", "AYUSO",
+        "AZADA", "AZAGA", "AZARO", "AZCON", "AZERI", "AZIMO", "AZORA", "AZORO", "AZOTE",
+        "AZOTO", "AZUZA", "AZUZO", "BABEL", "BABEO", "BABLE", "BACAN", "BACIA", "BACON",
+        "BADAN", "BADEN", "BADIL", "BAFIA", "BAGAR", "BAGRE", "BAHIA", "BAIDA", "BAILA",
+        "BAILE", "BAILO", "BAJAR", "BAJAS", "BAJEL", "BAJEN", "BAJEZ", "BAJIO", "BAJON",
+        "BALAJ", "BALAN", "BALAR", "BALAS", "BALAY", "BALDA", "BALDE", "BALDO", "BALEA",
+        "BALEO", "BALES", "BALIN", "BALON", "BALSA", "BALSO", "BALTA", "BALTO", "BAMBA",
+        "BANAL", "BANAS", "BANCA", "BANCO", "BANDA", "BANDO", "BANJO", "BANZO", "BARBA",
+        "BARBO", "BARCA", "BARCO", "BARDA", "BARDO", "BARIA", "BARIO", "BARRA", "BARRE",
+        "BARRI", "BARRO", "BARZA", "BASAL", "BASAR", "BASAS", "BASCA", "BASTA", "BASTE",
+        "BASTO", "BATAN", "BATAS", "BATEA", "BATEY", "BATIK", "BATIN", "BATIR", "BATIS",
+        "BAULA", "BAUZA", "BAYAL", "BAYON", "BAZAR", "BEATA", "BEATO", "BEBER", "BEBES",
+        "BECAR", "BEDEL", "BEFAR", "BEIGE", "BELEN", "BELEZ", "BELFO", "BELGA", "BELIO",
+        "BELLA", "BELLO", "BELUA", "BEMBA", "BEMBE", "BEMOL", "BENIN", "BEODA", "BEODO",
+        "BERMA", "BERRA", "BERRO", "BERTA", "BERZA", "BESAR", "BESAS", "BETEL", "BETUN",
+        "BICHO", "BIELA", "BIGAS", "BILIS", "BILLA", "BIMBA", "BINGO", "BIOTA", "BIPED",
+        "BIRLA", "BIRLO", "BISEL", "BITAR", "BITER", "BIZCA", "BIZCO", "BLOCA", "BLUES",
+        "BLUSA", "BOATO", "BOBEO", "BOCAL", "BOCAS", "BOCEL", "BOCHA", "BOCHE", "BOCIN",
+        "BOCIO", "BOCON", "BODAS", "BODON", "BOFAR", "BOFES", "BOFIA", "BOGAR", "BOGEY",
+        "BOGUE", "BOHIO", "BOINA", "BOIRA", "BOJAR", "BOJAS", "BOLAR", "BOLAS", "BOLDO",
+        "BOLEO", "BOLLA", "BOLLO", "BOLON", "BOLSA", "BOLSO", "BOMBA", "BOMBE", "BOMBO",
+        "BONAL", "BONGA", "BONGO", "BONZO", "BOQUE", "BOQUI", "BORAX", "BORDA", "BORDE",
+        "BORDO", "BOREO", "BORJA", "BORLA", "BORNA", "BORNE", "BORRA", "BORRO", "BOSAR",
+        "BOSON", "BOSTA", "BOTAR", "BOTAS", "BOTES", "BOTIN", "BOTON", "BOTOR", "BOXEA",
+        "BOXEO", "BOYAL", "BOYAR", "BOYAS", "BOZAL", "BRACA", "BRAGA", "BRAMA", "BRAMO",
+        "BRASA", "BRAVA", "BRAVO", "BRAZA", "BRAZO", "BREAR", "BRECA", "BREGA", "BRETE",
+        "BREVA", "BREVE", "BREZO", "BRIDA", "BRILL", "BRINCA", "BRINCO", "BRIOS", "BRISA",
+        "BRIZA", "BROCA", "BROMA", "BROMO", "BROTA", "BROTE", "BROTO", "BROZA", "BRUCE",
+        "BRUJA", "BRUJO", "BRUMA", "BRUMO", "BRUNO", "BRUÑO", "BRUTA", "BRUTO", "BRUZA",
+        "BUCAL", "BUCEA", "BUCEO", "BUCES", "BUCHE", "BUCLE", "BUDIN", "BUENA", "BUEYS",
+        "BUFAR", "BUFAS", "BUFET", "BUFIA", "BUFON", "BUGLE", "BUARO", "BULAR", "BULBO",
+        "BULDA", "BULLA", "BULLI", "BULTO", "BURDA", "BURDO", "BUREL", "BUREO", "BURGA",
+        "BURGO", "BURIL", "BURLA", "BURLO", "BURRA", "BURRO", "BUSCA", "BUSCO", "BUSTO",
+        "BUTEN", "BUZAR", "BUZOS", "CABAL", "CABAS", "CABER", "CABIA", "CABLE", "CABRA",
+        "CABRE", "CABRO", "CACAO", "CACER", "CACHE", "CACHO", "CADIZ", "CAER", "CAFES",
+        "CAFRE", "CAGAR", "CAGON", "CAIDA", "CAIDO", "CAIGA", "CAIGO", "CAIMA", "CAIRE",
+        "CAJEL", "CAJON", "CALAR", "CALAS", "CALCA", "CALCE", "CALCO", "CALDA", "CALDO",
+        "CALEN", "CALER", "CALES", "CALMA", "CALMO", "CALON", "CALOR", "CALVA", "CALVO",
+        "CALZA", "CALZO", "CAMAL", "CAMAO", "CAMBA", "CAMBI", "CAMBO", "CAMEL", "CAMEO",
+        "CAMON", "CAMPA", "CAMPO", "CANAL", "CANAS", "CANDA", "CANDI", "CANEA", "CANES",
+        "CANEY", "CANGA", "CANIA", "CANIL", "CANJE", "CANOA", "CANON", "CANSA", "CANSO",
+        "CANTA", "CANTE", "CANTO", "CAPAR", "CAPAS", "CAPAZ", "CAPEA", "CAPEL", "CAPEO",
+        "CAPIA", "CAPON", "CAPTA", "CAPTO", "CAPUZ", "CAQUI", "CARAO", "CARAY", "CARBA",
+        "CARCA", "CARDA", "CARDO", "CAREA", "CAREO", "CAREY", "CARGA", "CARGO", "CARIA",
+        "CARIO", "CARIZ", "CARLA", "CARLO", "CARME", "CARNE", "CARON", "CARPA", "CARPE",
+        "CARPO", "CARRA", "CARRO", "CASAR", "CASAS", "CASBA", "CASCA", "CASCO", "CASIA",
+        "CASPA", "CASTA", "CASTO", "CATAR", "CATAS", "CATEA", "CATEY", "CATON", "CATRE",
+        "CAUCE", "CAUCHO", "CAUDAL", "CAUSA", "CAUSO", "CAUTA", "CAUTO", "CAVAR", "CAVAS",
+        "CAYADO", "CAYOS", "CAZAR", "CAZAS", "CAZON", "CAZUR", "CEBAR", "CEBAS", "CEBRA",
+        "CEBRO", "CECAL", "CEDAN", "CEDAS", "CEDEN", "CEDER", "CEDES", "CEDRO", "CEGAR",
+        "CEGAS", "CEGUE", "CEIBA", "CEJAR", "CEJAS", "CELAR", "CELDA", "CELIA", "CELOS",
+        "CELTA", "CENAR", "CENAS", "CENIT", "CENSO", "CEPAS", "CEPOS", "CERCA", "CERCO",
+        "CERDA", "CERDO", "CEREO", "CEREZ", "CERIO", "CERNA", "CERNE", "CERNI", "CERPA",
+        "CESAR", "CESIO", "CESTA", "CESTO", "CETRO", "CHACO", "CHAFE", "CHALE", "CHAMA",
+        "CHAMO", "CHANE", "CHANGO", "CHANO", "CHAPA", "CHAPE", "CHAPO", "CHATO", "CHAVA",
+        "CHAVO", "CHECA", "CHECO", "CHEJE", "CHELI", "CHEPA", "CHEPO", "CHERO", "CHESA",
+        "CHIAR", "CHIDO", "CHILE", "CHINA", "CHINO", "CHIPA", "CHIPE", "CHIRI", "CHITA",
+        "CHITO", "CHIVA", "CHIVO", "CHOCO", "CHOLA", "CHOLO", "CHOPA", "CHOPO", "CHOTA",
+        "CHOVA", "CHOZA", "CHOZO", "CHUCA", "CHUCO", "CHUFA", "CHULA", "CHULO", "CHUPA",
+        "CHUTA", "CHUTE", "CHUZA", "CHUZO", "CIANO", "CIATO", "CIBIL", "CICLA", "CICLO",
+        "CIDRA", "CIDRO", "CIEGA", "CIEGO", "CIEMO", "CIFRA", "CIFRO", "CILIO", "CIMPA",
+        "CINCA", "CINCO", "CINTA", "CINTO", "CIRCE", "CIRIO", "CISCA", "CISCO", "CISMA",
+        "CISNE", "CITAR", "CITAS", "CLAMA", "CLAMO", "CLARA", "CLARO", "CLAVA", "CLAVE",
+        "CLAVO", "CLEMA", "CLERO", "CLICA", "CLIMA", "CLORO", "COBRA", "COBRE", "COBRO",
+        "COCAL", "COCEA", "COCER", "COCES", "COCHA", "COCHE", "COCHI", "COCIA", "COCIO",
+        "COCOS", "CODAL", "CODEX", "COFIA", "COFRE", "COGER", "COGES", "COGIA", "COITO",
+        "COJIN", "COLAR", "COLAS", "COLCHA", "COLEO", "COLES", "COLGA", "COLIN", "COLLA",
+        "COLMA", "COLMO", "COLON", "COLOR", "COLPA", "COLZA", "COMAS", "COMBA", "COMBO",
+        "COMER", "COMES", "COMIA", "COMIS", "CONCA", "CONDE", "CONGA", "CONGO", "CONIL",
+        "COPAL", "COPAR", "COPAS", "COPEC", "COPEN", "COPES", "COPEY", "COPIA", "COPIN",
+        "COPLA", "COPON", "COPTA", "COPTO", "CORAL", "CORAN", "CORAR", "CORCA", "CORDA",
+        "COREA", "CORIA", "CORIO", "CORLA", "CORNA", "CORNO", "CORPA", "CORPS", "CORRA",
+        "CORRE", "CORRI", "CORRO", "CORSA", "CORSO", "CORTA", "CORTE", "CORTO", "CORVA",
+        "CORVO", "CORZA", "CORZO", "COSAS", "COSCA", "COSER", "COSES", "COSIA", "COSTA",
+        "COSTE", "COSTO", "COTON", "COXAL", "COYOL", "CRASA", "CRASO", "CREAR", "CREAS",
+        "CRECE", "CRECI", "CREDO", "CREER", "CREES", "CREIA", "CREMA", "CREPE", "CRESP",
+        "CRETA", "CRIAR", "CRIAS", "CRIBA", "CRIBO", "CRIDA", "CRINA", "CROAR", "CROCO",
+        "CROMA", "CROMO", "CRONO", "CROSS", "CRUCE", "CRUDA", "CRUDO", "CRUEL", "CRUZA",
+        "CRUZO", "CUABA", "CUAJA", "CUAJO", "CUASI", "CUATE", "CUBIL", "CUBRE", "CUBRI",
+        "CUCAR", "CUCHA", "CUCHI", "CUECA", "CUECO", "CUELA", "CUELO", "CUERA", "CUERO",
+        "CUESA", "CUESCO", "CUEVA", "CUEZO", "CUIDA", "CUIDO", "CUIJA", "CUINA", "CUINO",
+        "CUITA", "CULEN", "CULPA", "CULPO", "CULTA", "CULTO", "CUMBI", "CUMBO", "CUMPL",
+        "CUNDA", "CUNDI", "CUNDO", "CUNEO", "CUPON", "CUQUE", "CURAR", "CURAS", "CURAY",
+        "CURDA", "CURDO", "CURE", "CURIA", "CURIE", "CURIO", "CURRO", "CURSA", "CURSI",
+        "CURSO", "CURTI", "CURVA", "CURVO", "CUSCA", "CUSCO", "CUSIR", "CUSMA", "CUTIR",
+        "CUTIS", "CUTRE", "CUYEO", "CUYOS", "DACHA", "DADOR", "DAIFA", "DALIA", "DALLA",
+        "DALLE", "DALLO", "DAMAS", "DAMBO", "DANES", "DANZA", "DANZO", "DAÑAR", "DAÑAS",
+        "DARDO", "DARES", "DARIA", "DATAR", "DATAS", "DATEA", "DATOS", "DAUCO", "DEBER",
+        "DEBES", "DEBIA", "DEBIL", "DEBLA", "DEBUT", "DECAE", "DECAI", "DECIA", "DECID",
+        "DECIR", "DEDAL", "DEDEO", "DEDIL", "DEESA", "DEJAR", "DEJAS", "DELGA", "DELIA",
+        "DELIO", "DELIR", "DELLA", "DELLO", "DELTA", "DEMAS", "DENDE", "DENSA", "DENSO",
+        "DENTE", "DEÑAR", "DEPAR", "DEPEN", "DEPRE", "DERBI", "DESCA", "DESDE", "DESEA",
+        "DESEO", "DESGA", "DESLI", "DESTE", "DESUS", "DEUDA", "DEUDO", "DEVAL", "DEVEL",
+        "DEVEN", "DEZME", "DIADO", "DIANA", "DIAÑO", "DICAZ", "DICEN", "DICES", "DICHA",
+        "DICHO", "DICTA", "DICTO", "DIESI", "DIETA", "DIETE", "DIETO", "DIGAS", "DIGNA",
+        "DIGNO", "DIJES", "DIMES", "DIMIR", "DIODO", "DIOSA", "DIQUE", "DIRAN", "DIRAS",
+        "DIRIA", "DISCA", "DISCO", "DISEC", "DIVAN", "DOBLA", "DOBLE", "DOBLO", "DOCIL",
+        "DOCTA", "DOCTO", "DOGAL", "DOLAR", "DOLER", "DOLIA", "DOLOR", "DOMAR", "DOMAS",
+        "DOMBO", "DOMES", "DONAR", "DONAS", "DONDE", "DONEO", "DOPAR", "DOPAS", "DORAR",
+        "DORAS", "DORIA", "DORIO", "DORMI", "DORNA", "DORSO", "DOSIS", "DOTAR", "DOTAS",
+        "DOTOR", "DRABA", "DRAGA", "DRAGO", "DRAMA", "DRENA", "DRENE", "DRENO", "DRINO",
+        "DRIZA", "DROGA", "DROGO", "DRUPA", "DUCHA", "DUCHO", "DUCIL", "DUDAR", "DUDAS",
+        "DUELA", "DUELO", "DUETO", "DULAR", "DULCE", "DULIA", "DUPLO", "DUQUE", "DURAR",
+        "DURAS", "ECHAR", "ECHAS", "EDEMA", "EDGAR", "EDITA", "EDITO", "EDRAR", "EDUAR",
+        "EDUCA", "EDUCO", "EFEBO", "EFESO", "EGIDA", "EJIDO", "ELATA", "ELATO", "ELCHE",
+        "ELENA", "ELEGI", "ELEPE", "ELEVA", "ELEVE", "ELEVO", "ELIDA", "ELIGE", "ELIJE",
+        "ELISA", "ELITE", "ELLAS", "ELLOS", "ELOTE", "ELUDA", "ELUDE", "ELUDI", "ELUDO",
+        "ELUIR", "ELUYO", "EMANA", "EMANO", "EMITE", "EMITI", "EMITO", "ENANA", "ENANO",
+        "ENERO", "ENOJA", "ENOJO", "ENTRA", "ENTRE", "ENTRO", "ENVES", "ENVIA", "ENVIO",
+        "ENZA", "EOZOA", "EPICA", "EPICO", "EPOCA", "EPODO", "EQUIS", "ERAJE", "ERALA",
+        "ERARIO", "ERBIO", "ERCER", "EREBO", "ERGIO", "ERGOT", "ERIZA", "ERIZO", "ERRAR",
+        "ERRAS", "ERRAJ", "ERROR", "ERUTO", "ESCAS", "ESCOA", "ESNOB", "ESPIA", "ESPIE",
+        "ESPIO", "ESQUI", "ESTAR", "ESTAS", "ESTAY", "ESTER", "ESTIL", "ESTIO", "ESTOR",
+        "ESTOS", "ESTRA", "ETAPA", "ETICA", "ETICO", "ETILO", "ETIMO", "ETNIA", "ETRUS",
+        "EUBEA", "EVADE", "EVADI", "EVADO", "EVITA", "EVITO", "EVOCA", "EVOCO", "EXIGE",
+        "EXIGI", "EXIJA", "EXIJO", "EXILA", "EXILE", "EXILO", "EXIMA", "EXIME", "EXIMI",
+        "EXIMO", "EXITO", "EXODO", "EXPIA", "EXPIO", "EXPON", "FABLA", "FABRO", "FACON",
+        "FAENA", "FAGOT", "FAJAR", "FAJAS", "FAJIN", "FAJOL", "FALAZ", "FALDA", "FALLA",
+        "FALLO", "FALSA", "FALSO", "FALTA", "FALTE", "FALTO", "FANGO", "FANTE", "FARAD",
+        "FARDA", "FARDO", "FARIA", "FARIO", "FAROL", "FARON", "FARPA", "FARRA", "FARRO",
+        "FARSA", "FARTE", "FASE", "FASTO", "FATAL", "FATOR", "FATUA", "FATUO", "FAUNA",
+        "FAUNO", "FAVOR", "FAXEA", "FEBEA", "FECHA", "FECHO", "FELIZ", "FELPA", "FELPO",
+        "FEMAR", "FEMUR", "FENDA", "FENIX", "FENOL", "FERAL", "FERAZ", "FERIA", "FERIE",
+        "FERIO", "FERIR", "FERMI", "FEROZ", "FERRA", "FERRE", "FERRO", "FETAL", "FETEN",
+        "FETUA", "FEUDA", "FEUDO", "FIACA", "FIADO", "FIANZA", "FIAR", "FIBRA", "FICAR",
+        "FICHA", "FICHO", "FICTO", "FIDEO", "FIEL", "FIERA", "FIERO", "FIGLE", "FIGON",
+        "FIJAR", "FIJAS", "FIJON", "FILAR", "FILAS", "FILFA", "FILIA", "FILIN", "FILME",
+        "FILMO", "FILON", "FINAL", "FINAR", "FINCA", "FINES", "FINGE", "FINGI", "FINIR",
+        "FINTA", "FIQUE", "FIRMA", "FIRME", "FISCO", "FISGA", "FISIO", "FISTA", "FLACA",
+        "FLACO", "FLAMA", "FLATO", "FLECO", "FLEJA", "FLEJE", "FLEMA", "FLEO", "FLETE",
+        "FLEXO", "FLIPA", "FLOJA", "FLOJO", "FLORA", "FLOTA", "FLOTE", "FLOTO", "FLUIR",
+        "FLUJO", "FLUOR", "FOBIA", "FOCAL", "FOCHA", "FOGON", "FOJA", "FOLIA", "FOLIO",
+        "FOLLA", "FONDA", "FONDO", "FONIL", "FONJE", "FORAL", "FORMA", "FORME", "FORMO",
+        "FORNI", "FORO", "FORRA", "FORRO", "FORTE", "FOSAL", "FOSAR", "FOSCA", "FOSCO",
+        "FOSIL", "FRAGA", "FRECE", "FREGA", "FREGO", "FREIR", "FRENA", "FRENE", "FRENO",
+        "FRESA", "FRESE", "FRESO", "FRETE", "FRIAS", "FRICA", "FRISA", "FRISO", "FRITA",
+        "FRITO", "FROGA", "FROTA", "FROTE", "FROTO", "FRUIR", "FRUTA", "FRUTO", "FUCIA",
+        "FUEGO", "FUERA", "FUERE", "FUERO", "FUESE", "FUGAR", "FUGAZ", "FUINA", "FULAR",
+        "FUMAR", "FUMAS", "FUNCA", "FUNDA", "FUNDE", "FUNDI", "FUNDO", "FUNGE", "FUNGI",
+        "FUNZA", "FURIA", "FUROR", "FURTO", "FUSCA", "FUSCO", "FUSIL", "FUSOR", "FUSTA",
+        "FUSTE", "FUSTO", "FUTIL", "FUTRE", "LIMBO", "PARAS", "PARCE", "ALCES"
+        // Agrega aquí más palabras si es necesario
+    ]);
 
-            let state = {
-                secretWord: '',
-                currentRow: 0,
-                currentCol: 0,
-                grid: Array(ROWS).fill().map(() => Array(COLS).fill('')),
-                gameOver: false,
-                startTime: null,
-            };
 
-            // ... (El resto del código JavaScript es el mismo)
-            const ls = {
-                getRecords: () => {
-                    const records = localStorage.getItem('wordle_pro_records');
-                    return records ? JSON.parse(records) : { bestTime: null, bestAttempts: null };
-                },
-                saveRecords: (records) => {
-                    localStorage.setItem('wordle_pro_records', JSON.stringify(records));
-                },
-                saveGameState: (gameState) => {
-                    localStorage.setItem('wordle_pro_gamestate', JSON.stringify(gameState));
-                },
-                loadGameState: () => {
-                    const gameState = localStorage.getItem('wordle_pro_gamestate');
-                    return gameState ? JSON.parse(gameState) : null;
-                },
-                clearGameState: () => {
-                    localStorage.removeItem('wordle_pro_gamestate');
-                }
-            };
-            
-            function showToast(message) {
-                toast.textContent = message;
-                toast.classList.add('show');
-                setTimeout(() => {
-                    toast.classList.remove('show');
-                }, 2000);
-            }
+    // --- NO ES NECESARIO TOCAR EL CÓDIGO DE AQUÍ EN ADELANTE ---
 
-            function updateUIFromState() {
-                for (let r = 0; r < ROWS; r++) {
-                    for (let c = 0; c < COLS; c++) {
-                        const tile = board.children[r * COLS + c];
-                        const front = tile.querySelector('.front');
-                        front.textContent = state.grid[r][c];
-                        if(state.grid[r][c]) {
-                            tile.classList.add('filled');
-                        } else {
-                            tile.classList.remove('filled');
-                        }
-                    }
-                }
-                if (state.currentRow > 0) {
-                    for (let i = 0; i < state.currentRow; i++) {
-                        const guess = state.grid[i].join('');
-                        if (guess.length === COLS) revealGuess(guess, i, true);
-                    }
-                }
-            }
-            
-            function init() {
-                const loadedState = ls.loadGameState();
-                if (loadedState && !loadedState.gameOver) {
-                    state = loadedState;
+    const board = document.getElementById('board');
+    const keyboard = document.getElementById('keyboard');
+    const modal = document.getElementById('records-modal');
+    const modalTitle = document.getElementById('modal-title');
+    const modalWord = document.getElementById('modal-word');
+    const bestTimeEl = document.getElementById('best-time');
+    const bestAttemptsEl = document.getElementById('best-attempts');
+    const playAgainButton = document.getElementById('play-again-button');
+    const toast = document.getElementById('toast');
+    
+    const ROWS = 6;
+    const COLS = 5;
+
+    let state = {
+        secretWord: '',
+        currentRow: 0,
+        currentCol: 0,
+        grid: Array(ROWS).fill().map(() => Array(COLS).fill('')),
+        gameOver: false,
+        startTime: null,
+    };
+
+    const ls = {
+        getRecords: () => {
+            const records = localStorage.getItem('wordle_pro_records');
+            return records ? JSON.parse(records) : { bestTime: null, bestAttempts: null };
+        },
+        saveRecords: (records) => {
+            localStorage.setItem('wordle_pro_records', JSON.stringify(records));
+        },
+        saveGameState: (gameState) => {
+            localStorage.setItem('wordle_pro_gamestate', JSON.stringify(gameState));
+        },
+        loadGameState: () => {
+            const gameState = localStorage.getItem('wordle_pro_gamestate');
+            return gameState ? JSON.parse(gameState) : null;
+        },
+        clearGameState: () => {
+            localStorage.removeItem('wordle_pro_gamestate');
+        }
+    };
+    
+    function showToast(message) {
+        toast.textContent = message;
+        toast.classList.add('show');
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 2000);
+    }
+
+    function updateUIFromState() {
+        for (let r = 0; r < ROWS; r++) {
+            for (let c = 0; c < COLS; c++) {
+                const tile = board.children[r * COLS + c];
+                const front = tile.querySelector('.front');
+                front.textContent = state.grid[r][c];
+                if(state.grid[r][c]) {
+                    tile.classList.add('filled');
                 } else {
-                    startNewGame(false);
-                }
-                
-                board.innerHTML = '';
-                for (let i = 0; i < ROWS * COLS; i++) {
-                    const tile = document.createElement('div');
-                    tile.classList.add('tile');
-                    tile.innerHTML = '<div class="front"></div><div class="back"></div>';
-                    board.appendChild(tile);
-                }
-                updateUIFromState();
-                updateRecordsDisplay();
-            }
-
-            function startNewGame(resetUIFlag = true) {
-                state.secretWord = words[Math.floor(Math.random() * words.length)];
-                state.currentRow = 0;
-                state.currentCol = 0;
-                state.grid = Array(ROWS).fill().map(() => Array(COLS).fill(''));
-                state.gameOver = false;
-                state.startTime = new Date().getTime();
-                ls.clearGameState();
-                if(resetUIFlag) resetUI();
-            }
-            
-            function resetUI() {
-                const tiles = document.querySelectorAll('.tile');
-                tiles.forEach(tile => {
-                    tile.querySelector('.front').textContent = '';
-                    tile.querySelector('.back').textContent = '';
-                    if(tile.classList.contains('reveal')) {
-                        tile.style.transition = 'none';
-                        tile.classList.remove('reveal');
-                        void tile.offsetWidth;
-                        tile.style.transition = '';
-                    }
-                    tile.classList.remove('correct', 'present', 'absent', 'filled');
-                });
-                const keys = document.querySelectorAll('.key');
-                keys.forEach(key => {
-                    key.classList.remove('correct', 'present', 'absent');
-                });
-                modal.classList.remove('show');
-            }
-
-            function handleKeyPress(key) {
-                if (state.gameOver) return;
-
-                if (key === 'enter') {
-                    if (state.currentCol === COLS) {
-                        submitGuess();
-                    } else {
-                        showToast('Palabra incompleta');
-                    }
-                } else if (key === 'backspace') {
-                    deleteLetter();
-                } else if (state.currentCol < COLS && /^[a-zA-ZñÑ]$/.test(key)) {
-                    addLetter(key.toUpperCase());
+                    tile.classList.remove('filled');
                 }
             }
+        }
+        if (state.currentRow > 0) {
+            for (let i = 0; i < state.currentRow; i++) {
+                const guess = state.grid[i].join('');
+                if (guess.length === COLS) revealGuess(guess, i, true);
+            }
+        }
+    }
+    
+    function init() {
+        const loadedState = ls.loadGameState();
+        if (loadedState && !loadedState.gameOver) {
+            state = loadedState;
+        } else {
+            startNewGame(false);
+        }
+        
+        board.innerHTML = '';
+        for (let i = 0; i < ROWS * COLS; i++) {
+            const tile = document.createElement('div');
+            tile.classList.add('tile');
+            tile.innerHTML = '<div class="front"></div><div class="back"></div>';
+            board.appendChild(tile);
+        }
+        updateUIFromState();
+        updateRecordsDisplay();
+    }
 
-            function addLetter(letter) {
-                state.grid[state.currentRow][state.currentCol] = letter;
-                const tile = board.children[state.currentRow * COLS + state.currentCol];
-                tile.querySelector('.front').textContent = letter;
-                tile.classList.add('filled');
-                state.currentCol++;
+    function startNewGame(resetUIFlag = true) {
+        state.secretWord = listaDeRespuestas[Math.floor(Math.random() * listaDeRespuestas.length)];
+        
+        state.currentRow = 0;
+        state.currentCol = 0;
+        state.grid = Array(ROWS).fill().map(() => Array(COLS).fill(''));
+        state.gameOver = false;
+        state.startTime = new Date().getTime();
+        ls.clearGameState();
+        if(resetUIFlag) resetUI();
+    }
+    
+    function resetUI() {
+        const tiles = document.querySelectorAll('.tile');
+        tiles.forEach(tile => {
+            tile.querySelector('.front').textContent = '';
+            tile.querySelector('.back').textContent = '';
+            if(tile.classList.contains('reveal')) {
+                tile.style.transition = 'none';
+                tile.classList.remove('reveal');
+                void tile.offsetWidth;
+                tile.style.transition = '';
+            }
+            tile.classList.remove('correct', 'present', 'absent', 'filled');
+        });
+        const keys = document.querySelectorAll('.key');
+        keys.forEach(key => {
+            key.classList.remove('correct', 'present', 'absent');
+        });
+        modal.classList.remove('show');
+    }
+
+    function handleKeyPress(key) {
+        if (state.gameOver) return;
+
+        if (key === 'enter') {
+            if (state.currentCol === COLS) {
+                submitGuess();
+            } else {
+                showToast('Palabra incompleta');
+            }
+        } else if (key === 'backspace') {
+            deleteLetter();
+        } else if (state.currentCol < COLS && /^[a-zA-ZñÑ]$/.test(key)) {
+            addLetter(key.toUpperCase());
+        }
+    }
+
+    function addLetter(letter) {
+        state.grid[state.currentRow][state.currentCol] = letter;
+        const tile = board.children[state.currentRow * COLS + state.currentCol];
+        tile.querySelector('.front').textContent = letter;
+        tile.classList.add('filled');
+        state.currentCol++;
+        ls.saveGameState(state);
+    }
+
+    function deleteLetter() {
+        if (state.currentCol > 0) {
+            state.currentCol--;
+            state.grid[state.currentRow][state.currentCol] = '';
+            const tile = board.children[state.currentRow * COLS + state.currentCol];
+            tile.querySelector('.front').textContent = '';
+            tile.classList.remove('filled');
+            ls.saveGameState(state);
+        }
+    }
+
+    function submitGuess() { // Ya no necesita ser ASYNC
+        const guess = state.grid[state.currentRow].join('');
+
+        // 3. VALIDACIÓN USANDO EL DICCIONARIO LOCAL
+        if (!diccionarioValido.has(guess)) {
+            showToast('Esa palabra no está en el diccionario');
+            return;
+        }
+        
+        revealGuess(guess, state.currentRow);
+        
+        const isWin = guess === state.secretWord;
+        const isLoss = !isWin && state.currentRow + 1 === ROWS;
+
+        setTimeout(() => {
+            if (isWin || isLoss) {
+                state.gameOver = true;
+                const timeTaken = Math.floor((new Date().getTime() - state.startTime) / 1000);
+                if(isWin) {
+                    updateRecords(timeTaken, state.currentRow + 1);
+                }
+                showEndGameModal(isWin, timeTaken);
                 ls.saveGameState(state);
             }
+        }, COLS * 300);
 
-            function deleteLetter() {
-                if (state.currentCol > 0) {
-                    state.currentCol--;
-                    state.grid[state.currentRow][state.currentCol] = '';
-                    const tile = board.children[state.currentRow * COLS + state.currentCol];
-                    tile.querySelector('.front').textContent = '';
-                    tile.classList.remove('filled');
-                    ls.saveGameState(state);
-                }
+        if (!state.gameOver) {
+            state.currentRow++;
+            state.currentCol = 0;
+            ls.saveGameState(state);
+        }
+    }
+
+    function revealGuess(guess, row, isInstant = false) {
+        const secret = state.secretWord.split('');
+        const guessLetters = guess.split('');
+        const letterCount = {};
+        secret.forEach(letter => { letterCount[letter] = (letterCount[letter] || 0) + 1; });
+
+        const statuses = Array(COLS).fill(null);
+
+        guessLetters.forEach((letter, index) => {
+            if (letter === secret[index]) {
+                statuses[index] = 'correct';
+                letterCount[letter]--;
             }
-
-            function submitGuess() {
-                const guess = state.grid[state.currentRow].join('');
-
-                if (!validWords.has(guess)) {
-                    showToast('Esa palabra no está en el diccionario');
-                    return; 
-                }
-                
-                revealGuess(guess, state.currentRow);
-                
-                const isWin = guess === state.secretWord;
-                const isLoss = !isWin && state.currentRow + 1 === ROWS;
-
-                setTimeout(() => {
-                    if (isWin || isLoss) {
-                        state.gameOver = true;
-                        const timeTaken = Math.floor((new Date().getTime() - state.startTime) / 1000);
-                        if(isWin) {
-                            updateRecords(timeTaken, state.currentRow + 1);
-                        }
-                        showEndGameModal(isWin, timeTaken);
-                        ls.saveGameState(state);
-                    }
-                }, COLS * 300);
-
-                if (!state.gameOver) {
-                    state.currentRow++;
-                    state.currentCol = 0;
-                    ls.saveGameState(state);
-                }
-            }
-
-            function revealGuess(guess, row, isInstant = false) {
-                const secret = state.secretWord.split('');
-                const guessLetters = guess.split('');
-                const letterCount = {};
-                secret.forEach(letter => { letterCount[letter] = (letterCount[letter] || 0) + 1; });
-
-                const statuses = Array(COLS).fill(null);
-
-                guessLetters.forEach((letter, index) => {
-                    if (letter === secret[index]) {
-                        statuses[index] = 'correct';
-                        letterCount[letter]--;
-                    }
-                });
-
-                guessLetters.forEach((letter, index) => {
-                    if (statuses[index] === null) {
-                        if (secret.includes(letter) && letterCount[letter] > 0) {
-                            statuses[index] = 'present';
-                            letterCount[letter]--;
-                        } else {
-                            statuses[index] = 'absent';
-                        }
-                    }
-                });
-                
-                const rowTiles = Array.from(board.children).slice(row * COLS, (row * COLS) + COLS);
-                rowTiles.forEach((tile, index) => {
-                    updateTileAndKey(tile, guessLetters[index], statuses[index], isInstant, index);
-                });
-            }
-
-            function updateTileAndKey(tile, letter, status, isInstant, index) {
-                const delay = isInstant ? 0 : index * 300;
-                
-                setTimeout(() => {
-                    tile.classList.add('reveal');
-                    tile.querySelector('.back').textContent = letter;
-                    tile.classList.add(status);
-
-                    const key = document.querySelector(`.key[data-key="${letter.toLowerCase()}"]`);
-                    if (!key) return;
-
-                    const currentKeyStatus = key.className;
-                    if (status === 'correct') {
-                        key.classList.remove('present', 'absent');
-                        key.classList.add('correct');
-                    } else if (status === 'present' && !currentKeyStatus.includes('correct')) {
-                        key.classList.remove('absent');
-                        key.classList.add('present');
-                    } else if (status === 'absent' && !currentKeyStatus.includes('correct') && !currentKeyStatus.includes('present')) {
-                        key.classList.add('absent');
-                    }
-                }, delay);
-            }
-
-            function updateRecords(time, attempts) {
-                const records = ls.getRecords();
-                
-                if (records.bestTime === null || time < records.bestTime) {
-                    records.bestTime = time;
-                }
-                if (records.bestAttempts === null || attempts < records.bestAttempts) {
-                    records.bestAttempts = attempts;
-                }
-                
-                ls.saveRecords(records);
-                updateRecordsDisplay();
-            }
-            
-            function updateRecordsDisplay() {
-                const records = ls.getRecords();
-                bestTimeEl.textContent = records.bestTime !== null ? `${records.bestTime}s` : 'N/A';
-                bestAttemptsEl.textContent = records.bestAttempts !== null ? records.bestAttempts : 'N/A';
-            }
-
-            function showEndGameModal(isWin, time) {
-                ls.clearGameState();
-                modal.classList.add('show');
-                if (isWin) {
-                    modalTitle.textContent = "¡Felicidades!";
-                    modalWord.textContent = `La palabra era: ${state.secretWord}. Tiempo: ${time}s.`;
-                } else {
-                    modalTitle.textContent = "Fin del Juego";
-                    modalWord.textContent = `La palabra correcta era: ${state.secretWord}.`;
-                }
-            }
-
-            keyboard.addEventListener('click', (e) => {
-                if (e.target.matches('[data-key]')) {
-                    handleKeyPress(e.target.dataset.key);
-                }
-            });
-
-            document.addEventListener('keydown', (e) => {
-                let key = e.key.toLowerCase();
-                if (key === 'enter') {
-                    handleKeyPress('enter');
-                } else if (key === 'backspace') {
-                    handleKeyPress('backspace');
-                } else if (key.length === 1 && (key >= 'a' && key <= 'z' || key === 'ñ')) {
-                    handleKeyPress(key);
-                }
-            });
-
-            playAgainButton.addEventListener('click', () => {
-                startNewGame(true);
-            });
-
-            init();
         });
+
+        guessLetters.forEach((letter, index) => {
+            if (statuses[index] === null) {
+                if (secret.includes(letter) && letterCount[letter] > 0) {
+                    statuses[index] = 'present';
+                    letterCount[letter]--;
+                } else {
+                    statuses[index] = 'absent';
+                }
+            }
+        });
+        
+        const rowTiles = Array.from(board.children).slice(row * COLS, (row * COLS) + COLS);
+        rowTiles.forEach((tile, index) => {
+            updateTileAndKey(tile, guessLetters[index], statuses[index], isInstant, index);
+        });
+    }
+
+    function updateTileAndKey(tile, letter, status, isInstant, index) {
+        const delay = isInstant ? 0 : index * 300;
+        
+        setTimeout(() => {
+            tile.classList.add('reveal');
+            tile.querySelector('.back').textContent = letter;
+            tile.classList.add(status);
+
+            const key = document.querySelector(`.key[data-key="${letter.toLowerCase()}"]`);
+            if (!key) return;
+
+            const currentKeyStatus = key.className;
+            if (status === 'correct') {
+                key.classList.remove('present', 'absent');
+                key.classList.add('correct');
+            } else if (status === 'present' && !currentKeyStatus.includes('correct')) {
+                key.classList.remove('absent');
+                key.classList.add('present');
+            } else if (status === 'absent' && !currentKeyStatus.includes('correct') && !currentKeyStatus.includes('present')) {
+                key.classList.add('absent');
+            }
+        }, delay);
+    }
+
+    function updateRecords(time, attempts) {
+        const records = ls.getRecords();
+        
+        if (records.bestTime === null || time < records.bestTime) {
+            records.bestTime = time;
+        }
+        if (records.bestAttempts === null || attempts < records.bestAttempts) {
+            records.bestAttempts = attempts;
+        }
+        
+        ls.saveRecords(records);
+        updateRecordsDisplay();
+    }
+    
+    function updateRecordsDisplay() {
+        const records = ls.getRecords();
+        bestTimeEl.textContent = records.bestTime !== null ? `${records.bestTime}s` : 'N/A';
+        bestAttemptsEl.textContent = records.bestAttempts !== null ? records.bestAttempts : 'N/A';
+    }
+
+    function showEndGameModal(isWin, time) {
+        ls.clearGameState();
+        modal.classList.add('show');
+        if (isWin) {
+            modalTitle.textContent = "¡Felicidades!";
+            modalWord.textContent = `La palabra era: ${state.secretWord}. Tiempo: ${time}s.`;
+        } else {
+            modalTitle.textContent = "Fin del Juego";
+            modalWord.textContent = `La palabra correcta era: ${state.secretWord}.`;
+        }
+    }
+
+    keyboard.addEventListener('click', (e) => {
+        if (e.target.matches('[data-key]')) {
+            handleKeyPress(e.target.dataset.key);
+        }
+    });
+
+    document.addEventListener('keydown', (e) => {
+        let key = e.key.toLowerCase();
+        if (key === 'enter') {
+            handleKeyPress('enter');
+        } else if (key === 'backspace') {
+            handleKeyPress('backspace');
+        } else if (key.length === 1 && (key >= 'a' && key <= 'z' || key === 'ñ')) {
+            handleKeyPress(key);
+        }
+    });
+
+    playAgainButton.addEventListener('click', () => {
+        startNewGame(true);
+    });
+
+    
+    const lokiCat = document.getElementById('lokiCat');
+    const bubble = document.getElementById('bubble');
+    if (lokiCat){
+        let original = bubble.textContent;
+        lokiCat.addEventListener('mouseenter', ()=>{ bubble.textContent='¡Miau! 🐱'; });
+        lokiCat.addEventListener('mouseleave', ()=>{ bubble.textContent=original; });
+        lokiCat.addEventListener('click', ()=>{ lokiCat.style.transform='scale(.95)'; setTimeout(()=>lokiCat.style.transform='scale(1)',150); });
+    }
+
+    init();
+});
     </script>
+
+    
 </body>
 </html>
