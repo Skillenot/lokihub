@@ -23,9 +23,8 @@
             --color-presente: #b59f3b;
             --color-ausente: #161616;
             --radius: 16px;
-            --font-main: 'DM Sans', sans-serif; /* Cambiado a DM Sans */
+            --font-main: 'DM Sans', sans-serif; 
 
-            /* Variables del nuevo estilo */
             --glass:rgba(45, 45, 46, 0.2);
             --glass-brd:rgba(255,255,255,.08);
             --blur:blur(20px);
@@ -421,7 +420,7 @@ header h1 {
     <script>
 document.addEventListener('DOMContentLoaded', () => {
 
-    // 1. LISTA CURADA DE RESPUESTAS (Palabras a adivinar)
+    // LISTA
     const listaDeRespuestas = [
         "ABEJA", "ACTOR", "ADIOS", "AGUAS", "AGUDO", "AHORA", "ALBUM", "ALTAR", "AMIGO", 
         "AMOR", "ANCHO", "ANGEL", "ANIMO", "ANTES", "ARBOL", "ARENA", "ARROZ", "AUDIO", 
@@ -683,11 +682,7 @@ document.addEventListener('DOMContentLoaded', () => {
         "FUMAR", "FUMAS", "FUNCA", "FUNDA", "FUNDE", "FUNDI", "FUNDO", "FUNGE", "FUNGI",
         "FUNZA", "FURIA", "FUROR", "FURTO", "FUSCA", "FUSCO", "FUSIL", "FUSOR", "FUSTA",
         "FUSTE", "FUSTO", "FUTIL", "FUTRE", "LIMBO", "PARAS", "PARCE", "ALCES", "PELEO"
-        // Agrega aquí más palabras si es necesario
     ]);
-
-
-    // --- NO ES NECESARIO TOCAR EL CÓDIGO DE AQUÍ EN ADELANTE ---
 
     const board = document.getElementById('board');
     const keyboard = document.getElementById('keyboard');
@@ -847,10 +842,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function submitGuess() { // Ya no necesita ser ASYNC
+    function submitGuess() { 
         const guess = state.grid[state.currentRow].join('');
 
-        // 3. VALIDACIÓN USANDO EL DICCIONARIO LOCAL
         if (!diccionarioValido.has(guess)) {
             showToast('Esa palabra no está en el diccionario');
             return;
