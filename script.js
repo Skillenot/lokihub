@@ -207,3 +207,46 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
+
+// Modal
+
+ document.addEventListener("DOMContentLoaded", () => {
+        const minecraftModal = document.getElementById("minecraftModal");
+        const openModalBtn = document.getElementById("minecraft");
+        const closeModalBtn = minecraftModal.querySelector(".close-button");
+        const copyBtn = document.getElementById("copyIpBtn");
+
+        openModalBtn.addEventListener("click", () => {
+          minecraftModal.style.display = "flex";
+        });
+
+        closeModalBtn.addEventListener("click", () => {
+          minecraftModal.style.display = "none";
+        });
+
+        window.addEventListener("click", (event) => {
+          if (event.target === minecraftModal) {
+            minecraftModal.style.display = "none";
+          }
+        });
+         window.addEventListener("keydown", (event) => {
+          if (event.key === "Escape" && minecraftModal.style.display === "flex") {
+            minecraftModal.style.display = "none";
+          }
+        });
+
+        copyBtn.addEventListener("click", () => {
+          const serverIp = document.querySelector("#serverAddressContainer code").textContent;
+          navigator.clipboard.writeText(serverIp).then(() => {
+            const originalText = copyBtn.innerHTML;
+            copyBtn.innerHTML = '<i class="fa-regular fa-circle-check"></i> Copiado!';
+            copyBtn.disabled = true;
+            setTimeout(() => {
+              copyBtn.innerHTML = originalText;
+              copyBtn.disabled = false;
+            }, 2000);
+          }).catch(err => {
+            console.error("Error al copiar la IP: ", err);
+          });
+        });
+      });

@@ -17,6 +17,89 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
+    <link
+      href="https://fonts.cdnfonts.com/css/minecraft-4"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <style>
+      /* Minecraft Modal Styles */
+      .minecraft-title {
+        font-family: "Minecraft", sans-serif;
+        text-align: center;
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        color: #ddd;
+        text-shadow: 2px 2px #333;
+      }
+      .modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 1000; /* Sit on top */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgba(0, 0, 0, 0.7); /* Black w/ opacity */
+        -webkit-backdrop-filter: blur(5px);
+        backdrop-filter: blur(5px);
+        align-items: center;
+        justify-content: center;
+      }
+      .modal-content {
+        position: relative;
+        padding: 2rem;
+        width: 90%;
+        max-width: 500px;
+        border-radius: 16px;
+        animation: fadeIn 0.3s ease-out;
+      }
+      @keyframes fadeIn {
+        from { opacity: 0; transform: scale(0.9); }
+        to { opacity: 1; transform: scale(1); }
+      }
+      .close-button {
+        color: #aaa;
+        position: absolute;
+        top: 10px;
+        right: 20px;
+        font-size: 28px;
+        font-weight: bold;
+      }
+      .close-button:hover,
+      .close-button:focus {
+        color: white;
+        text-decoration: none;
+        cursor: pointer;
+      }
+      .modal-body p, .modal-body li { margin-bottom: 0.75rem; }
+      .modal-body ol { padding-left: 20px; }
+      .server-address {
+        background: rgba(0,0,0,0.3);
+        padding: 0.75rem 1rem;
+        border-radius: 8px;
+        margin: 1.5rem 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .server-address code { font-family: monospace; font-size: 1.2rem; color: #a5d6a7; }
+      .copy-button {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: #fff;
+        padding: 8px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background 0.2s;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .copy-button:hover { background: rgba(255, 255, 255, 0.2); }
+    </style>
   </head>
 
   <body>
@@ -115,8 +198,8 @@
 
                   <button class="app-pill" id="minecraft" aria-label="Minecraft">
                   <span class="app-icon">⛏️</span>
-                  Server Minecraft
-                  <span class="soon" style="color: rgb(237, 179, 33);">Mods</span>
+                  Minecraft Server
+                  <span class="soon" style="color: rgb(61, 234, 131);">New</span>
                 </button>
               </div>
             </div>
@@ -174,10 +257,10 @@
             <p>Chat minimalista con presencia en tiempo real.</p>
           </article>
 
-          <article class="card glass reveal soon-card">
-            <div class="card-badge soon">Pronto</div>
-            <h3>💰 LokiFinance</h3>
-            <p>Dashboard financiero personal con gráficos.</p>
+          <article class="card glass reveal">
+            <div class="card-badge">En construcción</div>
+            <h3>⛏️ Perlacraft</h3>
+            <p>Servidor Minecraft 24/7 con plugins para una mejor experiencia.</p>
           </article>
         </div>
       </div>
@@ -292,6 +375,34 @@
         </div>
       </div>
     </footer>
+
+    <!-- MINECRAFT MODAL -->
+    <div id="minecraftModal" class="modal">
+      <div class="modal-content glass">
+        <span class="close-button">&times;</span>
+        <h3 class="minecraft-title" style="color: white; /* Fill color */
+-webkit-text-stroke: 0.5px black; /* Border thickness and color */">CONECTAR A PERLACRAFT</h3>
+        <div class="modal-body">
+          <p>Para unirte a nuestro servidor de Minecraft, sigue estos pasos:</p>
+          <ol>
+            <li>Abre Minecraft: Java Edition, no es necesario ser <b>Premium</b></li>
+            <li>En el menú principal, haz click en <strong>"Multijugador"</strong>.</li>
+            <li>Luego, haz click en <strong>"Añadir servidor"</strong>.</li>
+            <li>
+              En "Nombre del servidor" pon lo que quieras (ej: PerlaCraft). En
+              "Dirección del servidor", introduce:
+            </li>
+          </ol>
+          <div class="server-address" id="serverAddressContainer">
+            <code>lokihub.cloud:25565</code>
+            <button id="copyIpBtn" class="copy-button">
+              <i class="fa-regular fa-copy"></i> Copiar
+            </button>
+          </div>
+          <p>¡Haz click en "Hecho" y estarás list@ para entrar a jugar!</p>
+        </div>
+      </div>
+    </div>
 
     <script src="script.js"></script>
   </body>
